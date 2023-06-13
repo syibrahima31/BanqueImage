@@ -19,8 +19,6 @@ registrationForm.addEventListener('submit', (event) => {
   const password = passwordInput.value.trim();
   const confirmPassword = confirmPasswordInput.value.trim();
 
-  console.log(username, email, password, confirmPassword);
-
   let isValid = true;
 
   if (username === '') {
@@ -56,7 +54,26 @@ registrationForm.addEventListener('submit', (event) => {
 
   if (isValid) {
     // Submit the form or perform further actions
-    registrationForm.submit();
+    // registrationForm.submit();
+    const data = {
+      username: username,
+      email: email,
+      password: password
+    }
+    const urlEncodedData = Object.keys(data).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`).join('&');
+    fetch("/submit-subscription", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: urlEncodedData
+    }).then(response => response.json())
+      .then(data => {
+        console.log(data);
+      })
+      .catch(error => {
+        console.log(error);
+      })
   }
 });
 
