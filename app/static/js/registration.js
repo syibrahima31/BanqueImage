@@ -69,10 +69,15 @@ registrationForm.addEventListener('submit', (event) => {
       body: urlEncodedData
     }).then(response => response.json())
       .then(data => {
-        console.log(data);
+        if(data.code_message === "200"){
+          M.toast({html: `<span style="background-color:green">${data.message}</span>`})
+        } else {
+          M.toast({html: `<span style="background-color:orange">${data.message}</span>`})
+        }
+        
       })
       .catch(error => {
-        console.log(error);
+        console.log('Error', error);
       })
   }
 });

@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, jsonify, request
 from .models import Utilisateur
+from .utilities import register_user
 
 users = Blueprint("users", __name__)
 
@@ -21,4 +22,8 @@ def subscribe():
     username = request.form['username']
     email = request.form['email']
     password = request.form['password']
-    pass
+    is_registered = register_user(email, username, password)
+    if is_registered:
+        return jsonify({"message": "Registered successfully", "code_message": "200"})
+    else:
+        return jsonify({"message": "User already registered", "code_message": "400"})

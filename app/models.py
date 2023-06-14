@@ -1,4 +1,5 @@
 from . import db
+from enum import Enum
 
 association_table1 = db.Table('association_table1',
                               db.Column('utilisateur_id', db.Integer, db.ForeignKey('utilisateur.id')),
@@ -30,7 +31,7 @@ class Utilisateur(db.Model):
     admins = db.relationship("Admin", secondary=association_table1, backref="utilisateurs")
     images = db.relationship("Image", secondary=association_table2, backref="utilisateurs")
     contributeurs = db.relationship("Contributeur", secondary=association_table3, backref="utilisateurs")
-    paiements = db.relationship("Paiement", backref="utilisateur")
+    paiements = db.relationship("Paiement", backref="owner")
 
 
 class Contributeur(db.Model):
@@ -39,7 +40,7 @@ class Contributeur(db.Model):
     username = db.Column(db.String)
     password = db.Column(db.String)
     email = db.Column(db.String)
-    images = db.relationship("Image", backref="contributeur")
+    images = db.relationship("Image", backref="uploader")
     admins = db.relationship("Admin", secondary=association_table4, backref="contributeurs")
 
 
@@ -57,7 +58,13 @@ class Paiement(db.Model):
     montant = db.Column(db.String)
     devise = db.Column(db.String)
     utilisateur_id = db.Column(db.Integer, db.ForeignKey('utilisateur.id'))
-    utilisateur = db.relationship("Utilisateur", backref="paiements")
+    utilisateur = db.relationship("Utilisateur", backref="payments")
+
+
+class UploadStatusChoices(Enum):
+    PENDING = 'pending'
+    VALIDATED = 'validated'
+    REJECTED = 'rejected'
 
 
 class Image(db.Model):
@@ -67,6 +74,7 @@ class Image(db.Model):
     image_url = db.Column(db.String)
     tags = db.Column(db.String)
     description = db.Column(db.String)
+    status = db.Column(db.Enum(UploadStatusChoices, name='upload_status'), default=UploadStatusChoices.PENDING)
     payment_required = db.Column(db.Boolean)
     contributeur_id = db.Column(db.Integer, db.ForeignKey('contributeur.id'))
-    contributeur = db.relationship("Contributeur", backref="images")
+    contributeur = db.relationship("Contributeur", backref="uploaded_images")
