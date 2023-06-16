@@ -1,5 +1,8 @@
 from . import db
 from enum import Enum
+from flask_login import UserMixin
+from . import login_manager
+
 
 association_table1 = db.Table('association_table1',
                               db.Column('utilisateur_id', db.Integer, db.ForeignKey('utilisateur.id')),
@@ -21,13 +24,19 @@ association_table4 = db.Table('association_table4',
                               db.Column('admin_id', db.Integer, db.ForeignKey('admin.id'))
                               )
 
+class Role(Enum):
+    USER = 'user'
+    ADMIN = 'admin'
+    CONTRIBUTOR = 'contributor'
 
-class Utilisateur(db.Model):
+
+class Utilisateur(db.Model, UserMixin):
     __tablename__ = 'utilisateur'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String)
+    username = db.Column(db.String, unique=True)
     password = db.Column(db.String)
     email = db.Column(db.String)
+    role = db.Column(db.Enum(Role, name='user_role'), default=Role.USER)
     admins = db.relationship("Admin", secondary=association_table1, backref="utilisateurs")
     images = db.relationship("Image", secondary=association_table2, backref="utilisateurs")
     contributeurs = db.relationship("Contributeur", secondary=association_table3, backref="utilisateurs")
@@ -37,7 +46,7 @@ class Utilisateur(db.Model):
 class Contributeur(db.Model):
     __tablename__ = 'contributeur'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String)
+    username = db.Column(db.String, unique=True)
     password = db.Column(db.String)
     email = db.Column(db.String)
     images = db.relationship("Image", backref="uploader")
@@ -47,7 +56,7 @@ class Contributeur(db.Model):
 class Admin(db.Model):
     __tablename__ = 'admin'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String)
+    username = db.Column(db.String, unique=True)
     password = db.Column(db.String)
     email = db.Column(db.String)
 
@@ -78,3 +87,8 @@ class Image(db.Model):
     payment_required = db.Column(db.Boolean)
     contributeur_id = db.Column(db.Integer, db.ForeignKey('contributeur.id'))
     contributeur = db.relationship("Contributeur", backref="uploaded_images")
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Utilisateur.query.get(user_id)

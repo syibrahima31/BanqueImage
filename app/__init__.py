@@ -2,8 +2,11 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from flask_migrate import Migrate
+from flask_login import LoginManager
+
 
 db = SQLAlchemy()
+login_manager = LoginManager()
 
 
 def create_app():
@@ -13,10 +16,12 @@ def create_app():
 
     # link app and database
     db.init_app(app)
-
-    migration = Migrate(app, db)
+    login_manager.init_app(app)
+    login_manager.login_view = "users.login"
+    Migrate(app, db)
 
     # register blueprint
     from app.views import users
     app.register_blueprint(users)
     return app
+

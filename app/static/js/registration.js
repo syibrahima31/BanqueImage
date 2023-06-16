@@ -61,7 +61,7 @@ registrationForm.addEventListener('submit', (event) => {
       password: password
     }
     const urlEncodedData = Object.keys(data).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`).join('&');
-    fetch("/submit-subscription", {
+    fetch("/submit-registration", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -70,9 +70,13 @@ registrationForm.addEventListener('submit', (event) => {
     }).then(response => response.json())
       .then(data => {
         if(data.code_message === "200"){
-          M.toast({html: `<span style="background-color:green">${data.message}</span>`})
+          M.toast({html: `${data.message}`});
+          setTimeout(() => {
+            window.location.href = "/login";
+          }, 3000);
         } else {
-          M.toast({html: `<span style="background-color:orange">${data.message}</span>`})
+          M.toast({html: `${data.message}`});
+          
         }
         
       })
