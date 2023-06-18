@@ -24,11 +24,6 @@ association_table4 = db.Table('association_table4',
                               db.Column('admin_id', db.Integer, db.ForeignKey('admin.id'))
                               )
 
-class Role(Enum):
-    USER = 'user'
-    ADMIN = 'admin'
-    CONTRIBUTOR = 'contributor'
-
 
 class Utilisateur(db.Model, UserMixin):
     __tablename__ = 'utilisateur'
@@ -36,11 +31,10 @@ class Utilisateur(db.Model, UserMixin):
     username = db.Column(db.String, unique=True)
     password = db.Column(db.String)
     email = db.Column(db.String)
-    role = db.Column(db.Enum(Role, name='user_role'), default=Role.USER)
     admins = db.relationship("Admin", secondary=association_table1, backref="utilisateurs")
     images = db.relationship("Image", secondary=association_table2, backref="utilisateurs")
     contributeurs = db.relationship("Contributeur", secondary=association_table3, backref="utilisateurs")
-    paiements = db.relationship("Paiement", backref="owner")
+    paiements = db.relationship("Paiement", backref="utilisateur")
 
 
 class Contributeur(db.Model):
@@ -49,7 +43,7 @@ class Contributeur(db.Model):
     username = db.Column(db.String, unique=True)
     password = db.Column(db.String)
     email = db.Column(db.String)
-    images = db.relationship("Image", backref="uploader")
+    images = db.relationship("Image", backref="contributeur")
     admins = db.relationship("Admin", secondary=association_table4, backref="contributeurs")
 
 
@@ -67,7 +61,6 @@ class Paiement(db.Model):
     montant = db.Column(db.String)
     devise = db.Column(db.String)
     utilisateur_id = db.Column(db.Integer, db.ForeignKey('utilisateur.id'))
-    utilisateur = db.relationship("Utilisateur", backref="payments")
 
 
 class UploadStatusChoices(Enum):
@@ -83,10 +76,14 @@ class Image(db.Model):
     image_url = db.Column(db.String)
     tags = db.Column(db.String)
     description = db.Column(db.String)
+    taille = db.Column(db.Integer)
+    format = db.Column(db.String)
+    height = db.Column(db.Integer)
+    width = db.Column(db.Integer)
+    orientation = db.Column(db.Integer)
     status = db.Column(db.Enum(UploadStatusChoices, name='upload_status'), default=UploadStatusChoices.PENDING)
     payment_required = db.Column(db.Boolean)
     contributeur_id = db.Column(db.Integer, db.ForeignKey('contributeur.id'))
-    contributeur = db.relationship("Contributeur", backref="uploaded_images")
 
 
 @login_manager.user_loader
