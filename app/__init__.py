@@ -17,6 +17,9 @@ def create_app():
     migration = Migrate(app, db)
 
     # register blueprint
-    from app.views import users
+    from app.views import users, contrib, admin
     app.register_blueprint(users)
+    app.register_blueprint(contrib)
+    app.register_blueprint(admin)
+
     return app
