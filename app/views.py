@@ -2,13 +2,13 @@ from flask import Blueprint, render_template, jsonify, request, flash, redirect,
 import json
 import os
 from werkzeug.utils import secure_filename
-from .utilities import register_user, credentials_match
+from .utilities import register_user, credentials_match, process_request
 from flask_login import login_user, logout_user, login_required, LoginManager
-from .models import Utilisateur, Contributeur, Image
+from .models import Utilisateur, Contributeur, Image, Admin
 
-users = Blueprint("users", __name__)
-contrib = Blueprint("contrib", __name__)
-admin = Blueprint("admin", __name__)
+users = Blueprint("users_bp", __name__)
+contrib = Blueprint("contrib_bp", __name__)
+admin = Blueprint("admin_bp", __name__)
 login_manager = LoginManager()
 
 
@@ -38,35 +38,37 @@ def upload_image():
             return "No file upload"
 
 
-@admin.route("/admin/add/contributeur")
-def add():
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-        email = request.form.get("email")
-
-    return render_template("contributeur.html")
-
-
 @users.route("/dashboard")
 @login_required
 def dashboard():
     return render_template("dashboard.html")
 
 
-@users.route("/login", methods=['GET', 'POST'])
+@users.route("/login", methods=['GET', 'POST'], endpoint="user-login")
 def login():
     if request.method == "POST":
         username = request.form['username']
         password = request.form['password']
-        if credentials_match(username, password):
-            user = Utilisateur.query.filter_by(username=username).first()
-            login_user(user)
-            return jsonify({'message': 'Logged in successfully', 'code_message': '200'})
-        else:
-            return jsonify({'message': 'User already registered', 'code_message': '400'})
+        return process_request(username, password, Utilisateur)
+    return render_template('user/login.html')
 
-    return render_template('login.html', next_page=json.dumps({"name": "users.dashboard"}))
+
+@admin.route("/login", methods=['GET', 'POST'], endpoint="admin-login")
+def login():
+    if request.method == "POST":
+        username = request.form['username']
+        password = request.form['password']
+        return process_request(username, password, Admin)
+    return render_template('admin/login.html')
+
+
+@contrib.route("/login", methods=['GET', 'POST'], endpoint="contrib-login")
+def login():
+    if request.method == "POST":
+        username = request.form['username']
+        password = request.form['password']
+        return process_request(username, password, Contributeur)
+    return render_template('contributeur/login.html')
 
 
 @users.route("/register", methods=['GET', 'POST'])
@@ -89,4 +91,4 @@ def subscribe():
 @users.route("/logout", endpoint="logout")
 def logout():
     logout_user()
-    return redirect(url_for('users.login'))
+    return redirect(url_for('users_bp.login'))

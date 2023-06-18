@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: c1c4d1d9e9a5
+Revision ID: 8865eb46e51a
 Revises: 
-Create Date: 2023-06-18 13:55:06.013113
+Create Date: 2023-06-18 15:22:40.833430
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c1c4d1d9e9a5'
+revision = '8865eb46e51a'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -23,21 +23,24 @@ def upgrade():
     sa.Column('username', sa.String(), nullable=True),
     sa.Column('password', sa.String(), nullable=True),
     sa.Column('email', sa.String(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('username')
     )
     op.create_table('contributeur',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(), nullable=True),
     sa.Column('password', sa.String(), nullable=True),
     sa.Column('email', sa.String(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('username')
     )
     op.create_table('utilisateur',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(), nullable=True),
     sa.Column('password', sa.String(), nullable=True),
     sa.Column('email', sa.String(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('username')
     )
     op.create_table('contributeur_admin',
     sa.Column('contributeur_id', sa.Integer(), nullable=True),
