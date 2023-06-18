@@ -25,7 +25,13 @@ loginForm.addEventListener('submit', (event) => {
     body: urlEncodedData
   }).then(response => response.json())
   .then(data => {
-    console.log(data);
+    if(data.code_message === "200") {
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 2000)
+    } else {
+      M.toast({html: `${data.message}`});
+    }
   })
   .catch(error => {
     

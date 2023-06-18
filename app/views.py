@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, jsonify, request, flash, redirect
+import json
+from flask import Blueprint, render_template, jsonify, request, flash, redirect, url_for, session
 from .models import Utilisateur
 from .utilities import register_user, credentials_match
 from flask_login import login_user, logout_user, login_required, LoginManager
@@ -12,7 +13,8 @@ login_manager = LoginManager()
 def index():
     return "Bienvenue dans le projet"
 
-@users.route("/dashboard", methods=["GET"])
+@users.route("/dashboard")
+@login_required
 def dashboard():
     return render_template("dashboard.html")
 
@@ -21,16 +23,14 @@ def login():
     if request.method == "POST":
         username = request.form['username']
         password = request.form['password']
-        print(username, password)
         if credentials_match(username, password):
             user = Utilisateur.query.filter_by(username=username).first()
             login_user(user)
-            flash("User logged in successfully", category="success")
-            redirect("/dashboard")
+            return jsonify({'message': 'Logged in successfully', 'code_message': '200'})
         else:
-            return jsonify({"message": "Authentication failed", "code_message": "400"})
+            return jsonify({'message': 'User already registered', 'code_message': '400'})
         
-    return render_template('login.html')
+    return render_template('login.html', next_page=json.dumps({"name": "users.dashboard"}))
 
 @users.route("/register", methods=['GET', 'POST'])
 def register():
@@ -43,11 +43,12 @@ def subscribe():
     password = request.form['password']
     is_registered = register_user(email, username, password)
     if is_registered:
-        return jsonify({"message": "Registered successfully", "code_message": "200"})
+        return jsonify({'message': 'Registered successfully', 'code_message': '200'})
     else:
-        return jsonify({"message": "User already registered", "code_message": "400"})
+        return jsonify({'message': 'User already registered', 'code_message': '400'})
 
 
-@users.route("/logout", methods=["GET", "POST"])
+@users.route("/logout", endpoint="logout")
 def logout():
-    pass
+    logout_user()
+    return redirect(url_for('users.login'))
