@@ -70,18 +70,18 @@ registrationForm.addEventListener('submit', (event) => {
     }).then(response => response.json())
       .then(data => {
         if(data.code_message === "200"){
-          M.toast({html: `${data.message}`});
+          M.toast({html: `${data.message}`, classes: "green-toast"});
           setTimeout(() => {
             window.location.href = "/login";
           }, 3000);
         } else {
-          M.toast({html: `${data.message}`});
+          M.toast({html: `${data.message}`, classes: "orange-toast"});
           
         }
         
       })
       .catch(error => {
-        console.log('Error', error);
+        M.toast({html: `${error}`, classes: "red-toast"});
       })
   }
 });

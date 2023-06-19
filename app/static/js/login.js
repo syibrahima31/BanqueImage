@@ -30,11 +30,11 @@ loginForm.addEventListener('submit', (event) => {
         window.location.href = "/dashboard";
       }, 2000)
     } else {
-      M.toast({html: `${data.message}`});
+      M.toast({html: `${data.message}`, classes: 'orange-toast'});
     }
   })
   .catch(error => {
-    
+    M.toast({html: `${error}`, classes: 'red-toast'});
   })
 
 })

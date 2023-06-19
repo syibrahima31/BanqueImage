@@ -44,4 +44,14 @@
     color: red;
     margin-top: 5px;
   }
+
+  .orange-toast {
+    background-color: orange;
+    color: white;
+  }
+
+  .red-toast {
+    background-color: red;
+    color: white;
+  }
   

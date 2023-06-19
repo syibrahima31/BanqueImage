@@ -45,4 +45,19 @@
     color: red;
     margin-top: 5px;
   }
+
+  .green-toast {
+    background-color: green;
+    color: white;
+  }
+
+  .orange-toast {
+    background-color: orange;
+    color: white;
+  }
+
+  .red-toast {
+    background-color: red;
+    color: white;
+  }
   

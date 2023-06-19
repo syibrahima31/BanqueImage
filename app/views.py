@@ -28,7 +28,7 @@ def login():
             login_user(user)
             return jsonify({'message': 'Logged in successfully', 'code_message': '200'})
         else:
-            return jsonify({'message': 'User already registered', 'code_message': '400'})
+            return jsonify({'message': 'Check again your credentials', 'code_message': '400'})
         
     return render_template('login.html', next_page=json.dumps({"name": "users.dashboard"}))
 
