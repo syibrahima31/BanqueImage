@@ -1,5 +1,11 @@
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+
 class Config:
-    SECRET_KEY = '192b9bdd22ab9ed4d12e236c78afcb9a393ec15f71bbf5dc987d54727823bcbf'
-    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:passer@localhost:5433/BANQUEIMAGE'
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SECRET_KEY = os.getenv('SECRET_KEY')
+    SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
+    SQLALCHEMY_TRACK_MODIFICATIONS = os.getenv('SQLALCHEMY_TRACK_MODIFICATIONS')
     LOGIN_REDIRECT_URL = '/dashboard'

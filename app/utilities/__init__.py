@@ -30,4 +30,4 @@ def process_request(username, password, model):
         login_user(user)
         return jsonify({'message': 'Logged in successfully', 'code_message': '200'})
     else:
-        return jsonify({'message': 'User already registered', 'code_message': '400'})
+        return jsonify({'message': 'Check again your credentials', 'code_message': '400'})

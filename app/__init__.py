@@ -17,7 +17,7 @@ def create_app():
     # link app and database
     db.init_app(app)
     login_manager.init_app(app)
-    login_manager.login_view = "users.login"
+    login_manager.login_view = "users_bp.user-login"
     Migrate(app, db)
 
     # register blueprint

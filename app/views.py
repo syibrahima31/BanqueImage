@@ -53,7 +53,7 @@ def login():
     return render_template('user/login.html')
 
 
-@admin.route("/login", methods=['GET', 'POST'], endpoint="admin-login")
+@admin.route("/hidden/cave/admin/login", methods=['GET', 'POST'], endpoint="admin-login")
 def login():
     if request.method == "POST":
         username = request.form['username']
