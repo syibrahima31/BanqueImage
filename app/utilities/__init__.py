@@ -5,11 +5,11 @@ from ..models import Utilisateur
 from flask_login import login_user
 
 
-def register_user(email, username, password):
-    user = Utilisateur.query.filter_by(username=username, email=email).first()
+def register_user(email, username, password, model):
+    user = model.query.filter_by(username=username, email=email).first()
     if user is None:
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        user = Utilisateur(username=username, email=email, password=hashed_password.decode('utf-8'))
+        user = model(username=username, email=email, password=hashed_password.decode('utf-8'))
         db.session.add(user)
         db.session.commit()
         return True

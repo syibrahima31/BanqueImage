@@ -27,7 +27,7 @@ def upload_image():
             filename = secure_filename(filename)
             filepath = os.path.join('uploads', filename)
             uploaded_file.save(filepath)
-
+            
             nom = request.form.get("nom")
             email = request.form.get("email")
 
@@ -81,7 +81,7 @@ def subscribe():
     username = request.form['username']
     email = request.form['email']
     password = request.form['password']
-    is_registered = register_user(email, username, password)
+    is_registered = register_user(email, username, password, Utilisateur)
     if is_registered:
         return jsonify({'message': 'Registered successfully', 'code_message': '200'})
     else:
