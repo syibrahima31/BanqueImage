@@ -3,26 +3,31 @@ from enum import Enum
 from flask_login import UserMixin
 from . import login_manager
 
+Utilisateur_Admin = db.Table('utilisateur_admin',
+                             db.Column('utilisateur_id', db.Integer, db.ForeignKey('utilisateur.id')),
+                             db.Column('admin_id', db.Integer, db.ForeignKey('admin.id'))
+                             )
 
-association_table1 = db.Table('association_table1',
-                              db.Column('utilisateur_id', db.Integer, db.ForeignKey('utilisateur.id')),
-                              db.Column('admin_id', db.Integer, db.ForeignKey('admin.id'))
-                              )
+Utilisateur_Image = db.Table('utilisateur_image',
+                             db.Column('utilisateur_id', db.Integer, db.ForeignKey('utilisateur.id')),
+                             db.Column('image_id', db.Integer, db.ForeignKey('image.id'))
+                             )
 
-association_table2 = db.Table('association_table2',
-                              db.Column('utilisateur_id', db.Integer, db.ForeignKey('utilisateur.id')),
-                              db.Column('image_id', db.Integer, db.ForeignKey('image.id'))
-                              )
+Utilisateur_Contributeur = db.Table('utilisateur_contributeur',
+                                    db.Column('utilisateur_id', db.Integer, db.ForeignKey('utilisateur.id')),
+                                    db.Column('contributeur_id', db.Integer, db.ForeignKey('contributeur.id'))
+                                    )
 
-association_table3 = db.Table('association_table3',
-                              db.Column('utilisateur_id', db.Integer, db.ForeignKey('utilisateur.id')),
-                              db.Column('contributeur_id', db.Integer, db.ForeignKey('contributeur.id'))
-                              )
-
-association_table4 = db.Table('association_table4',
+Contributeur_Admin = db.Table('contributeur_admin',
                               db.Column('contributeur_id', db.Integer, db.ForeignKey('contributeur.id')),
                               db.Column('admin_id', db.Integer, db.ForeignKey('admin.id'))
                               )
+
+
+class UploadStatusChoices(Enum):
+    PENDING = "pending"
+    VALIDATED = "validated"
+    REJECTED = "rejected"
 
 
 class Utilisateur(db.Model, UserMixin):
@@ -31,23 +36,24 @@ class Utilisateur(db.Model, UserMixin):
     username = db.Column(db.String, unique=True)
     password = db.Column(db.String)
     email = db.Column(db.String)
-    admins = db.relationship("Admin", secondary=association_table1, backref="utilisateurs")
-    images = db.relationship("Image", secondary=association_table2, backref="utilisateurs")
-    contributeurs = db.relationship("Contributeur", secondary=association_table3, backref="utilisateurs")
+    admins = db.relationship("Admin", secondary=Utilisateur_Admin, backref="utilisateurs")
+    images = db.relationship("Image", secondary=Utilisateur_Image, backref="utilisateurs")
+    contributeurs = db.relationship("Contributeur", secondary=Utilisateur_Contributeur, backref="utilisateurs")
+
     paiements = db.relationship("Paiement", backref="utilisateur")
 
 
-class Contributeur(db.Model):
+class Contributeur(db.Model, UserMixin):
     __tablename__ = 'contributeur'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String, unique=True)
-    password = db.Column(db.String)
-    email = db.Column(db.String)
+    username = db.Column(db.String, nullable=True, unique=True)
+    password = db.Column(db.String, nullable=True)
+    email = db.Column(db.String, nullable=True)
     images = db.relationship("Image", backref="contributeur")
-    admins = db.relationship("Admin", secondary=association_table4, backref="contributeurs")
+    admins = db.relationship("Admin", secondary=Contributeur_Admin, backref="contributeurs")
 
 
-class Admin(db.Model):
+class Admin(db.Model, UserMixin):
     __tablename__ = 'admin'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True)
@@ -76,12 +82,11 @@ class Image(db.Model):
     image_url = db.Column(db.String)
     tags = db.Column(db.String)
     description = db.Column(db.String)
-    taille = db.Column(db.Integer)
-    format = db.Column(db.String)
-    height = db.Column(db.Integer)
-    width = db.Column(db.Integer)
-    orientation = db.Column(db.Integer)
-    status = db.Column(db.Enum(UploadStatusChoices, name='upload_status'), default=UploadStatusChoices.PENDING)
+    taille = db.Column(db.Integer, nullable=True)
+    format = db.Column(db.String, nullable=True)
+    width = db.Column(db.Integer, nullable=True)
+    orientation = db.Column(db.Integer, nullable=True)
+    status = db.Column(db.Enum(UploadStatusChoices, name="upload_status"), default=UploadStatusChoices.PENDING)
     payment_required = db.Column(db.Boolean)
     contributeur_id = db.Column(db.Integer, db.ForeignKey('contributeur.id'))
 
