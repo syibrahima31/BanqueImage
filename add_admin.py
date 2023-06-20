@@ -1,7 +1,8 @@
 from dotenv import load_dotenv
 import os
-from app import models, db
-from app.utilities import register_user
+from app import db
+from utilities import register_user
+from . import models
 from run import app
 
 # Permet de charger les variables d'environnement provenant du fichier .env dans le script actuel

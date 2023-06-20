@@ -1,7 +1,8 @@
-from . import db
+from database_instance import db
+from login_manager_instance import login_manager
 from enum import Enum
 from flask_login import UserMixin
-from . import login_manager
+
 
 Utilisateur_Admin = db.Table('utilisateur_admin',
                              db.Column('utilisateur_id', db.Integer, db.ForeignKey('utilisateur.id')),
@@ -94,3 +95,11 @@ class Image(db.Model):
 @login_manager.user_loader
 def load_user(user_id):
     return Utilisateur.query.get(user_id)
+
+# @login_manager.user_loader
+# def load_admin(user_id):
+#     return Admin.query.get(user_id)
+
+# @login_manager.user_loader
+# def load_contrib(user_id):
+#     return Contributeur.query.get(user_id)
