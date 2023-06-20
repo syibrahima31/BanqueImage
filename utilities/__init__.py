@@ -38,7 +38,6 @@ def process_request(username, password, model):
             f = Fernet(os.getenv('FERNET_KEY'))
             role = json.dumps({'is_admin': True})
             session['role'] = f.encrypt(role.encode('utf-8'))
-        print('Classe user ', type(user))
         login_user(user)
         return jsonify({'message': 'Logged in successfully', 'code_message': '200'})
     else:

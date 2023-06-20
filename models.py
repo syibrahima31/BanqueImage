@@ -4,24 +4,29 @@ from enum import Enum
 from flask_login import UserMixin
 
 
+UTILISATEUR_ID = 'utilisateur.id'
+CONTRIBUTEUR_ID = 'contributeur.id'
+ADMIN_ID = 'admin.id'
+
+
 Utilisateur_Admin = db.Table('utilisateur_admin',
-                             db.Column('utilisateur_id', db.Integer, db.ForeignKey('utilisateur.id')),
-                             db.Column('admin_id', db.Integer, db.ForeignKey('admin.id'))
+                             db.Column(UTILISATEUR_ID, db.Integer, db.ForeignKey(UTILISATEUR_ID)),
+                             db.Column(ADMIN_ID, db.Integer, db.ForeignKey(ADMIN_ID))
                              )
 
 Utilisateur_Image = db.Table('utilisateur_image',
-                             db.Column('utilisateur_id', db.Integer, db.ForeignKey('utilisateur.id')),
+                             db.Column(UTILISATEUR_ID, db.Integer, db.ForeignKey(UTILISATEUR_ID)),
                              db.Column('image_id', db.Integer, db.ForeignKey('image.id'))
                              )
 
 Utilisateur_Contributeur = db.Table('utilisateur_contributeur',
-                                    db.Column('utilisateur_id', db.Integer, db.ForeignKey('utilisateur.id')),
-                                    db.Column('contributeur_id', db.Integer, db.ForeignKey('contributeur.id'))
+                                    db.Column(UTILISATEUR_ID, db.Integer, db.ForeignKey(UTILISATEUR_ID)),
+                                    db.Column(CONTRIBUTEUR_ID, db.Integer, db.ForeignKey(CONTRIBUTEUR_ID))
                                     )
 
 Contributeur_Admin = db.Table('contributeur_admin',
-                              db.Column('contributeur_id', db.Integer, db.ForeignKey('contributeur.id')),
-                              db.Column('admin_id', db.Integer, db.ForeignKey('admin.id'))
+                              db.Column(CONTRIBUTEUR_ID, db.Integer, db.ForeignKey(CONTRIBUTEUR_ID)),
+                              db.Column(ADMIN_ID, db.Integer, db.ForeignKey(ADMIN_ID))
                               )
 
 
@@ -96,10 +101,10 @@ class Image(db.Model):
 def load_user(user_id):
     return Utilisateur.query.get(user_id)
 
-# @login_manager.user_loader
-# def load_admin(user_id):
-#     return Admin.query.get(user_id)
+@login_manager.user_loader
+def load_admin(user_id):
+    return Admin.query.get(user_id)
 
-# @login_manager.user_loader
-# def load_contrib(user_id):
-#     return Contributeur.query.get(user_id)
+@login_manager.user_loader
+def load_contrib(user_id):
+    return Contributeur.query.get(user_id)

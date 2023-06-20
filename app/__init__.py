@@ -21,7 +21,7 @@ def create_app():
     admin_manager.init_app(app)
     admin_manager.add_view(ContributorView(Contributeur, db.session))
     login_manager.init_app(app)
-    login_manager.login_view = "users_bp.user-login"
+    login_manager.login_view = "users_bp.landing"
     Migrate(app, db)
 
     # register blueprint

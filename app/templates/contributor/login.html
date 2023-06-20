@@ -3,6 +3,7 @@
 <head>
     <title>Login</title>
     <!-- Include CSS stylesheets -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
 </head>
@@ -20,19 +21,11 @@
             </div>
             <button type="submit" class="btn">Login</button>
         </form>
-        <div>
-            <a href="{{url_for('users.register')}}">S'inscrire</a>
-        </div>
     </div>
-
-    <script>
-        // const val = "{{ next_page }}";
-        // console.log(val)
-    </script>
 
     <!-- Include JavaScript libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <!-- Include your own JavaScript file -->
-    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/contrib-login.js') }}"></script>
 </body>
 </html>

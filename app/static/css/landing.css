@@ -1,0 +1,70 @@
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Body styles */
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+  }
+  
+  /* Container styles */
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    text-align: center;
+  }
+  
+  /* Heading styles */
+  h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+  
+  /* User types container styles */
+  .user-types {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+  }
+  
+  /* User type button styles */
+  .user-type {
+    display: inline-block;
+    text-decoration: none;
+    background-color: #007bff;
+    color: #fff;
+    padding: 20px 30px;
+    border-radius: 5px;
+    margin: 0 10px;
+    transition: background-color 0.3s;
+  }
+  
+  .user-type:hover {
+    background-color: #0056b3;
+  }
+  
+  /* User type icon styles */
+  .user-type .icon {
+    font-size: 24px;
+  }
+  
+  /* Media query for responsiveness */
+  @media (max-width: 600px) {
+    h1 {
+      font-size: 26px;
+    }
+  
+    .user-type {
+      padding: 16px 24px;
+      font-size: 16px;
+      margin: 0 8px;
+    }
+  }
+  

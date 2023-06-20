@@ -19,7 +19,7 @@ loginForm.addEventListener('submit', (event) => {
   }
 
   const urlEncodedData = Object.keys(data).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`).join("&");
-  fetch("/login", {
+  fetch("/contributor/login", {
     method: "POST",
     headers: {"Content-Type": "application/x-www-form-urlencoded"},
     body: urlEncodedData

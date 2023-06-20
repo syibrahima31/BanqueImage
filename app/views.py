@@ -42,8 +42,12 @@ def upload_image():
 def dashboard():
     return render_template("dashboard.html")
 
+@users.route("/home", endpoint="landing")
+def landing():
+    return render_template("login.html")
 
-@users.route("/login", methods=['GET', 'POST'], endpoint="user-login")
+
+@users.route("/user/login", methods=['GET', 'POST'], endpoint="user-login")
 def login():
     if request.method == "POST":
         username = request.form['username']
@@ -61,13 +65,13 @@ def login():
     return render_template('admin/login.html')
 
 
-@contrib.route("/login", methods=['GET', 'POST'], endpoint="contrib-login")
+@contrib.route("/contributor/login", methods=['GET', 'POST'], endpoint="contrib-login")
 def login():
     if request.method == "POST":
         username = request.form['username']
         password = request.form['password']
         return process_request(username, password, Contributeur)
-    return render_template('contributeur/login.html')
+    return render_template('contributor/login.html')
 
 
 @users.route("/register", methods=['GET', 'POST'])
