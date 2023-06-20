@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, jsonify, request, redirect, url_for
+from flask import Blueprint, render_template, jsonify, request, redirect, url_for, session
 import os
 from werkzeug.utils import secure_filename
 from utilities import register_user, process_request
@@ -90,4 +90,6 @@ def subscribe():
 @users.route("/logout", endpoint="logout")
 def logout():
     logout_user()
+    if 'role' in session:
+        session.pop('role')
     return redirect(url_for('users_bp.user-login'))

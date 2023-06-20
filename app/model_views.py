@@ -11,7 +11,7 @@ from utilities import is_admin
 class ContributorView(ModelView):
 
     def is_accessible(self):
-        return current_user.is_authenticated and is_admin(session.get('role'))
+        return current_user.is_authenticated and is_admin(session.get('role')) if 'role' in session else False
 
     @expose("/new/", methods=('GET', 'POST'))
     def create_view(self):
