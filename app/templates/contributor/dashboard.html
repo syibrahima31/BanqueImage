@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contributor Dashboard - Image Bank App</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='/css/contrib-dashboard.css') }}">
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="#" class="nav-link" data-target="home">Home</a></li>
+        <li><a href="#" class="nav-link" data-target="{{ url_for('static', filename='/components/contrib/upload.html') }}">Upload Image</a></li>
+        <li><a href="#" class="nav-link" data-target="images">My Images</a></li>
+        <li><a href="#" class="nav-link" data-target="settings">Settings</a></li>
+        <li><a href="#" class="nav-link" data-target="logout">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div id="content" class="container">
+    <h1>Welcome to the Contributor Dashboard</h1>
+    <p>Your uploaded images:</p>
+    <div class="image-grid">
+      <!-- Image Cards -->
+    </div>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='/js/contrib-dashboard.js') }}">
+    </script>
+  </div>
+</body>
+</html>

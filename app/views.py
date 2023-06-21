@@ -37,10 +37,22 @@ def upload_image():
             return "No file upload"
 
 
-@users.route("/dashboard")
+@users.route("/user/dashboard", endpoint="user-dashboard")
 @login_required
 def dashboard():
-    return render_template("dashboard.html")
+    return render_template("user/dashboard.html")
+
+@contrib.route("/contributor/dashboard", endpoint="contrib-dashboard")
+@login_required
+def dashboard():
+    print(request.script_root)
+    return render_template("contributor/dashboard.html")
+
+@contrib.route("/contributor/upload", endpoint="contrib-upload")
+@login_required
+def dashboard():
+    print(request.script_root)
+    return render_template("contributor/upload.html")
 
 @users.route("/home", endpoint="landing")
 def landing():

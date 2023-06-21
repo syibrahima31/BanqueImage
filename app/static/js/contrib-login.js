@@ -27,7 +27,7 @@ loginForm.addEventListener('submit', (event) => {
   .then(data => {
     if(data.code_message === "200") {
       setTimeout(() => {
-        window.location.href = "/dashboard";
+        window.location.href = "/contributor/dashboard";
       }, 2000)
     } else {
       M.toast({html: `${data.message}`, classes: 'orange-toast'});
