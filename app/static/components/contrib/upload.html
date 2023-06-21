@@ -1,17 +1,14 @@
-<div class="container">
-    <h3>Upload Image</h3>
-    <form id="upload-form">
-        <div class="input-field">
-            <input type="file" id="image-file" name="image" required>
-        </div>
-        <div class="input-field">
-            <input type="text" id="tags" name="tags">
-            <label for="tags">Tags (comma-separated)</label>
-        </div>
-        <div class="input-field">
-            <textarea id="description" name="description" class="materialize-textarea"></textarea>
-            <label for="description">Description</label>
-        </div>
-        <button type="submit" class="btn">Upload</button>
+<div class="upload-container" style="background-color: #f5f5f5; padding: 20px; text-align: center;">
+    <h2 style="color: #333;">Upload Image</h2>
+    <form class="upload-form" style="margin-top: 20px;">
+      <div style="margin-bottom: 10px;">
+        <label for="image" style="display: block; margin-bottom: 5px;">Select Image:</label>
+        <input type="file" id="image" name="image" style="border: 1px solid #ccc; padding: 5px;">
+      </div>
+      <div style="margin-bottom: 10px;">
+        <label for="description" style="display: block; margin-bottom: 5px;">Description:</label>
+        <textarea id="description" name="description" style="border: 1px solid #ccc; padding: 5px;"></textarea>
+      </div>
+      <button type="submit" style="background-color: #337ab7; color: #fff; padding: 10px 20px; border: none; cursor: pointer;">Upload</button>
     </form>
 </div>

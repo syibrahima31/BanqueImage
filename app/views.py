@@ -32,9 +32,9 @@ def upload_image():
 
             Contributeur(username=nom, email=email)
 
-            return "Image save"
+            return jsonify({'message': 'Image saved successfully', 'code_message': '200'})
         else:
-            return "No file upload"
+            return jsonify({'message': 'No image uploaded', 'code_message': '400'})
 
 
 @users.route("/user/dashboard", endpoint="user-dashboard")

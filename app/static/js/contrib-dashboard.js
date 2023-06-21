@@ -2,6 +2,9 @@
 const navLinks = document.querySelectorAll('.nav-link');
 const contentDiv = document.getElementById('content');
 
+
+console.log()
+
 // Add click event listeners to the navigation links
 navLinks.forEach(link => {
   link.addEventListener('click', navigate);
@@ -30,8 +33,38 @@ async function loadContent(target) {
   const response = await fetch(target);
   const template = await response.text();
   const newContent = document.createElement('div');
-  
-    newContent.innerHTML = template;
-    contentDiv.appendChild(newContent);
+  newContent.style.cssText = `
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+ 
+    display: flex;
+    flex-direction: column;
+  `
+  newContent.innerHTML = template;
+  contentDiv.appendChild(newContent);
+  const form = document.querySelector('.upload-form');
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const fileInput = document.getElementById('image');
+    const descriptionInput = document.getElementById('description');
+    const file = fileInput.files[0];
+    const description = descriptionInput.value;
+    const formData = new FormData()
+    formData.append('image', file);
+    formData.append('description', description);
+
+    fetch('/upload', {
+      method: 'POST',
+      body: formData
+    }).then(response => response.text())
+    .then(data => {
+      console.log(data)
+    })
+    .catch(error => {
+      console.log(error);
+    })
+
+  })
   
 }
