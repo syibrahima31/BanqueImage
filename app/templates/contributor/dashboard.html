@@ -12,7 +12,7 @@
       <ul>
         <li><a href="#" class="nav-link" data-target="home">Home</a></li>
         <li><a href="#" class="nav-link" data-target="{{ url_for('static', filename='/components/contrib/upload.html') }}">Upload Image</a></li>
-        <li><a href="#" class="nav-link" data-target="images">My Images</a></li>
+        <li><a href="#" class="nav-link" data-target="{{ url_for('static', filename='/components/contrib/images.html') }}">My Images</a></li>
         <li><a href="#" class="nav-link" data-target="settings">Settings</a></li>
         <li><a href="#" class="nav-link" data-target="logout">Logout</a></li>
       </ul>
@@ -26,6 +26,7 @@
       <!-- Image Cards -->
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='/js/contrib-dashboard.js') }}">
     </script>
   </div>

@@ -13,10 +13,8 @@ navLinks.forEach(link => {
 // Function to handle navigation
 function navigate(event) {
   event.preventDefault();
-
   // Get the target of the clicked link
   const target = event.target.dataset.target;
-
   // Load the corresponding content based on the target
   loadContent(target);
 }
@@ -47,43 +45,55 @@ async function loadContent(target) {
   const checkboxInput = document.querySelector('#paiement');
   const buttonInput = document.querySelector('#submit-button');
 
-  checkboxInput.addEventListener('change', (e) => {
-
+  if(checkboxInput){
+    checkboxInput.addEventListener('change', (e) => {
     const newDiv = document.createElement('div');
-    newDiv.setAttribute('id', 'price');
+    newDiv.setAttribute('id', 'price-section');
     newDiv.style.cssText = 'margin-bottom: 10px;';
     const newLabel = document.createElement('label');
     newLabel.textContent = 'Price';
     newLabel.style.cssText = 'display: block; margin-bottom: 5px;';
     const newInput = document.createElement('input');
+    newInput.setAttribute('type', 'text');
     newInput.setAttribute('name', 'price');
+    newInput.setAttribute('id', 'price');
     newInput.style.cssText = 'border: 1px solid #ccc; padding: 5px;';
     newDiv.appendChild(newLabel);
     newDiv.appendChild(newInput);
 
-    if(checkboxInput.checked && !form.contains(document.querySelector('#price'))) {
+    if(checkboxInput.checked && !form.contains(document.querySelector('#price-section'))) {
     form.insertBefore(newDiv, buttonInput);
   } else {
-    const element = document.querySelector('#price');
+    const element = document.querySelector('#price-section');
     element.remove();
-  }
-  
+    }
   })
+  }
 
+  if(form) {
   form.addEventListener('submit', function(e) {
     e.preventDefault();
     const fileInput = document.getElementById('image');
     const descriptionInput = document.getElementById('description');
+    const paymentRequiredInput = document.getElementById('paiement');
+    const priceInput = document.getElementById('price');
     const file = fileInput.files[0];
     const description = descriptionInput.value;
+    const is_payment_required = paymentRequiredInput.checked;
     const formData = new FormData()
     formData.append('image', file);
     formData.append('description', description);
+    if(priceInput){
+      formData.append('price', priceInput.value);
+    }
+    formData.append('paiement', JSON.stringify(is_payment_required));
+
 
     fetch('/upload', {
       method: 'POST',
       body: formData
-    }).then(response => response.json())
+    })
+    .then(response => response.json())
     .then(data => {
       if(data.code_message === 200) {
         M.toast({html: `${data.message}`, classes: 'green-toast'});
@@ -97,5 +107,19 @@ async function loadContent(target) {
     })
 
   })
-  
+}
+
+const imageGrid = document.querySelector('.image-grid');
+if(imageGrid){
+  fetch('/contributor/images', {
+    method: 'GET',
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data)
+  })
+  .catch(error => {
+
+  })
+}
 }

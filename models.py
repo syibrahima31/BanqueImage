@@ -1,7 +1,8 @@
 from database_instance import db
 from login_manager_instance import login_manager
-from enum import Enum
+from enum import Enum, StrEnum
 from flask_login import UserMixin
+from flask import jsonify
 
 
 UTILISATEUR_ID = 'utilisateur.id'
@@ -30,7 +31,7 @@ Contributeur_Admin = db.Table('contributeur_admin',
                               )
 
 
-class UploadStatusChoices(Enum):
+class UploadStatusChoices(StrEnum):
     PENDING = "pending"
     VALIDATED = "validated"
     REJECTED = "rejected"
@@ -91,11 +92,26 @@ class Image(db.Model):
     taille = db.Column(db.Integer, nullable=True)
     format = db.Column(db.String, nullable=True)
     width = db.Column(db.Integer, nullable=True)
+    height = db.Column(db.Integer, nullable=True)
     orientation = db.Column(db.Integer, nullable=True)
     status = db.Column(db.Enum(UploadStatusChoices, name="upload_status"), default=UploadStatusChoices.PENDING)
     payment_required = db.Column(db.Boolean, default=False)
     price = db.Column(db.Float, nullable=True)
     contributeur_id = db.Column(db.Integer, db.ForeignKey('contributeur.id'))
+    
+    def render(self):
+        return {
+            'name': self.name,
+            'url': self.image_url,
+            'description': self.description,
+            'taille': self.taille,
+            'format': self.format,
+            'width': self.width,
+            'height': self.height,
+            # 'status': self.status,
+            'payment_required': self.payment_required,
+            'price': self.price
+        }
 
 
 @login_manager.user_loader

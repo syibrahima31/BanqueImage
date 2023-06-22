@@ -1,9 +1,11 @@
 from flask import Blueprint, render_template, jsonify, request, redirect, url_for, session
 import os
+import json
 from werkzeug.utils import secure_filename
 from utilities import register_user, process_request
 from flask_login import logout_user, login_required, LoginManager
 from models import Utilisateur, Contributeur, Image, Admin
+from database_instance import db
 from PIL import Image as Img
 
 
@@ -18,6 +20,10 @@ login_manager = LoginManager()
 def index():
     return render_template('index.html')
 
+@contrib.route("/contributor/images")
+@login_required
+def index():
+    return [image.render() for image in Image.query.filter_by(contributeur_id=session.get('_user_id')).all()]
 
 @contrib.route("/upload", methods=["POST"])
 def upload_image():
@@ -29,22 +35,22 @@ def upload_image():
             filepath = os.path.join('uploads', filename)
             uploaded_file.save(filepath)
             description = request.form.get('description')
-            payment_needed = request.form.getlist('paiement')
-            print("Paiement", payment_needed)
+            payment_needed = True if request.form.get('paiement') == 'true' else False
+            price = float(request.form.get('price')) if request.form.get('price') is not None else None
+            contributor = Contributeur.query.get(session.get('_user_id'))
             with Img.open(filepath) as im:
-                print("Size", im.size)
-                print("Format", im.format)
-                print("Width", im.width)
-                print("Height", im.height)
-                print("Info object", im.info)
-                print("Exif data", im.getexif())
-                print("Exif data", im._getexif())
-
-            
-            nom = request.form.get("nom")
-            email = request.form.get("email")
-
-            Contributeur(username=nom, email=email)
+                image = Image(image_url=filepath,
+                              description=description,
+                              name=im.filename,
+                              taille=(im.width * im.height),
+                              format=im.format,
+                              width=im.width,
+                              height=im.height,
+                              payment_required=payment_needed,
+                              price=price,
+                              contributeur_id=contributor.id)
+                db.session.add(image)
+                db.session.commit()
 
             return jsonify({'message': 'Image saved successfully', 'code_message': '200'})
         else:
