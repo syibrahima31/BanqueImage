@@ -4,6 +4,8 @@ from werkzeug.utils import secure_filename
 from utilities import register_user, process_request
 from flask_login import logout_user, login_required, LoginManager
 from models import Utilisateur, Contributeur, Image, Admin
+from PIL import Image as Img
+
 
 users = Blueprint("users_bp", __name__)
 contrib = Blueprint("contrib_bp", __name__)
@@ -26,6 +28,18 @@ def upload_image():
             filename = secure_filename(filename)
             filepath = os.path.join('uploads', filename)
             uploaded_file.save(filepath)
+            description = request.form.get('description')
+            payment_needed = request.form.getlist('paiement')
+            print("Paiement", payment_needed)
+            with Img.open(filepath) as im:
+                print("Size", im.size)
+                print("Format", im.format)
+                print("Width", im.width)
+                print("Height", im.height)
+                print("Info object", im.info)
+                print("Exif data", im.getexif())
+                print("Exif data", im._getexif())
+
             
             nom = request.form.get("nom")
             email = request.form.get("email")

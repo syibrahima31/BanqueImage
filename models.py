@@ -93,7 +93,8 @@ class Image(db.Model):
     width = db.Column(db.Integer, nullable=True)
     orientation = db.Column(db.Integer, nullable=True)
     status = db.Column(db.Enum(UploadStatusChoices, name="upload_status"), default=UploadStatusChoices.PENDING)
-    payment_required = db.Column(db.Boolean)
+    payment_required = db.Column(db.Boolean, default=False)
+    price = db.Column(db.Float, nullable=True)
     contributeur_id = db.Column(db.Integer, db.ForeignKey('contributeur.id'))
 
 

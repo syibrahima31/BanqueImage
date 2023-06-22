@@ -156,3 +156,18 @@
     }
   }
   
+  .orange-toast {
+    background-color: orange;
+    color: white;
+  }
+
+  .red-toast {
+    background-color: red;
+    color: white;
+  }
+
+  .green-toast {
+    background-color: green;
+    color: white;
+  }
+  
