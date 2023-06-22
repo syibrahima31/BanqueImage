@@ -116,7 +116,25 @@ if(imageGrid){
   })
   .then(response => response.json())
   .then(data => {
-    console.log(data)
+    const cardList = data.map((item) => {
+     return `
+      <div class="row">
+        <div class="col s12 m7">
+          <div class="card">
+            <div class="card-image">
+              <img src="${item.image_url}">
+              <span class="card-title">${item.name}</span>
+            </div>
+            <div class="card-content">
+              Description: 
+              <textarea>${item.description}</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      `
+    });
+    imageGrid.innerHTML = cardList.join('');
   })
   .catch(error => {
 
