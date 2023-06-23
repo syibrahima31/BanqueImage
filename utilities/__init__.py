@@ -50,4 +50,3 @@ def is_admin(role):
     decoded_role = decrypted_role.decode('utf-8')
     role = json.loads(decoded_role)
     return role.get('is_admin')
-    

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, jsonify, request, redirect, url_for, session
+from flask import Blueprint, render_template, jsonify, request, redirect, url_for, session, send_file
 import os
 import json
 from werkzeug.utils import secure_filename
@@ -20,6 +20,11 @@ login_manager = LoginManager()
 def index():
     return render_template('index.html')
 
+@contrib.route("/contributor/images/<path:image_name>/<mimetype>")
+def serve_image(image_name, mimetype):
+    base_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "uploads\\" + image_name)
+    return send_file(base_dir, mimetype='image/' + mimetype)
+
 @contrib.route("/contributor/images")
 @login_required
 def index():
@@ -33,6 +38,8 @@ def upload_image():
             filename = uploaded_file.filename
             filename = secure_filename(filename)
             filepath = os.path.join('uploads', filename)
+            print('File path ', filepath)
+            print('File name ', filename)
             uploaded_file.save(filepath)
             description = request.form.get('description')
             payment_needed = True if request.form.get('paiement') == 'true' else False
@@ -41,7 +48,7 @@ def upload_image():
             with Img.open(filepath) as im:
                 image = Image(image_url=filepath,
                               description=description,
-                              name=im.filename,
+                              name=filename,
                               taille=(im.width * im.height),
                               format=im.format,
                               width=im.width,

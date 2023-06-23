@@ -118,20 +118,16 @@ if(imageGrid){
   .then(data => {
     const cardList = data.map((item) => {
      return `
-      <div class="row">
-        <div class="col s12 m7">
           <div class="card">
-            <div class="card-image">
-              <img src="${item.image_url}">
+            <div class="image-card">
+              <img src="/contributor/images/${item.name}/${item.format.toLowerCase()}">
               <span class="card-title">${item.name}</span>
             </div>
             <div class="card-content">
-              Description: 
-              <textarea>${item.description}</textarea>
+              <label>Description: </label>
+              <p>${item.description}</p>
             </div>
           </div>
-        </div>
-      </div>
       `
     });
     imageGrid.innerHTML = cardList.join('');
