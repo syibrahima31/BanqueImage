@@ -127,7 +127,6 @@ if(imageGrid){
       // Create a div to contain the buttons
       const buttonsDiv = document.createElement('div');
       buttonsDiv.classList.add('buttons');
-    
       // Create two buttons
       const button1 = document.createElement('button');
       button1.textContent = 'Modifier';
@@ -142,9 +141,20 @@ if(imageGrid){
       button2.addEventListener('click', (e) => {
         instance.open();
         const imageDeletionTrigger = document.querySelector('.delete-confirm');
-        imageDeletionTrigger.addEventListener('click', () => {
-        console.log('Call image deletion endpoint');
-        })
+        imageDeletionTrigger.onclick = () => {
+          const id = e.target.parentNode.parentNode.querySelector('.image-id').dataset.id;
+          fetch(`/contributor/images/${id}/delete`, {
+            method: 'DELETE'
+          })
+          .then(response => response.json())
+          .then(data => {
+            M.toast({html: `${data.message}`, classes: "green-toast"});
+            e.target.parentNode.parentNode.remove();
+          })
+          .catch(error => {
+            M.toast({html: `${error}`, classes: "red-toast"});
+          })
+        }
       })
       button2.setAttribute('data-target', 'modal2')
     
