@@ -1,9 +1,11 @@
+document.addEventListener('DOMContentLoaded', () => {
+
+const elt = document.querySelector('.modal');
+const instance = M.Modal.init(elt);
+
 // Get the navigation links and content div
 const navLinks = document.querySelectorAll('.nav-link');
 const contentDiv = document.getElementById('content');
-
-
-console.log()
 
 // Add click event listeners to the navigation links
 navLinks.forEach(link => {
@@ -49,7 +51,6 @@ async function loadContent(target) {
     if(checkboxInput.checked) {
       console.log("Checked");
       const priceBloc = document.querySelector('.price-bloc');
-      console.log(priceBloc);
       priceBloc.setAttribute("style", "display: block;");
   } else {
       const priceBloc = document.querySelector('.price-bloc');
@@ -91,7 +92,7 @@ async function loadContent(target) {
     })
     .catch(error => {
       console.log(error);
-      M.toast({html: `${data.message}`, classes: 'red-toast'});
+      M.toast({html: `${error}`, classes: 'red-toast'});
     })
 
   })
@@ -107,6 +108,7 @@ if(imageGrid){
     const cardList = data.map((item) => {
      return `
           <div class="card">
+            <input class="image-id" type="hidden" data-id="${item.id}">
             <div class="image-card">
               <img src="/contributor/images/${item.name}/${item.format.toLowerCase()}">
               <span class="card-title">${item.name}</span>
@@ -118,6 +120,7 @@ if(imageGrid){
           </div>
       `
     });
+
     imageGrid.innerHTML = cardList.join('');
     const cards = document.querySelectorAll('.card');
     for (let card of cards) {
@@ -128,13 +131,22 @@ if(imageGrid){
       // Create two buttons
       const button1 = document.createElement('button');
       button1.textContent = 'Modifier';
-      button1.setAttribute('class', 'btn');
-      button1.addEventListener('click', () => console.log('edit clicked!'))
+      button1.setAttribute('class', 'waves-effect waves-light btn');
+      button1.addEventListener('click', (e) => {
+        console.log('Implémenter modification');
+      })
     
       const button2 = document.createElement('button');
       button2.textContent = 'Supprimer';
-      button2.setAttribute('class', 'btn');
-      button2.addEventListener('click', () => console.log('delete clicked!'))
+      button2.setAttribute('class', 'waves-effect waves-light btn modal-trigger');
+      button2.addEventListener('click', (e) => {
+        instance.open();
+        const imageDeletionTrigger = document.querySelector('.delete-confirm');
+        imageDeletionTrigger.addEventListener('click', () => {
+        console.log('Call image deletion endpoint');
+        })
+      })
+      button2.setAttribute('data-target', 'modal2')
     
       // Add the buttons to the div
       buttonsDiv.appendChild(button1);
@@ -145,7 +157,10 @@ if(imageGrid){
     }
   })
   .catch(error => {
-
+    M.toast({html: `${error}`, classes: "red-toast"});
   })
 }
 }
+
+
+});

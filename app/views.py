@@ -30,6 +30,17 @@ def serve_image(image_name, mimetype):
 def index():
     return [image.render() for image in Image.query.filter_by(contributeur_id=session.get('_user_id')).all()]
 
+@contrib.route("/contributor/images/<id>/delete", methods=['DELETE'])
+@login_required
+def delete(id):
+    image = Image.query.filter_by(id=int(id)).first()
+    if image:
+        db.session.delete(image)
+        db.session.commit()
+        return jsonify({'message': 'Image deleted successfully', 'code_message': '200'})
+    else:
+        return jsonify({'message': 'Image doesn\'t exist', 'code_message': '400'})
+
 @contrib.route("/upload", methods=["POST"])
 def upload_image():
     if request.method == "POST":

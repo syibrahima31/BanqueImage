@@ -21,15 +21,22 @@
   </header>
 
   <div id="content" class="container">
-    <!-- <h1>Welcome to the Contributor Dashboard</h1>
-    <p>Your uploaded images:</p>
-    <div class="image-grid"> -->
-      <!-- Image Cards -->
-    <!-- </div> -->
+    <!-- Dynamic content here -->
+  </div>
+
+  <div id="modal2" class="modal">
+    <div class="modal-content">
+      <h4>Action</h4>
+      <p>Voulez-vous supprimer l'image ?</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat delete-confirm">Oui</a>
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Non</a>
+    </div>
+  </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='/js/contrib-dashboard.js') }}">
     </script>
-  </div>
 </body>
 </html>
