@@ -11,6 +11,10 @@
     background-color: #f5f5f5;
     color: #333;
   }
+
+  .buttons .btn {
+    margin: 5px;
+  }
   
   /* Header styles */
   header {
@@ -80,7 +84,8 @@
 
   .card-content {
     /* border: 1px solid #ccc; */
-    height: auto;
+    height: 110px;
+    width: 230px;
   }
 
   .card-content label {
@@ -104,6 +109,8 @@
     /* border: 1px solid #ccc; */
     padding: 10px;
     border-radius: 5px;
+    width: 230px;
+    height: 250px;
   }
   
   .image-card img {

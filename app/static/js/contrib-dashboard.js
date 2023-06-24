@@ -115,23 +115,34 @@ if(imageGrid){
               <label>Description: </label>
               <p>${item.description}</p>
             </div>
-            <div class="card-buttons">
-              <button id="edit" class="btn">Modifier</button>
-              <button id="delete" class="btn">Supprimer</button>
-            </div>
           </div>
       `
     });
     imageGrid.innerHTML = cardList.join('');
-    const editButton = imageGrid.querySelector('#edit');
-    editButton.addEventListener('click', () => {
-      console.log("edit clicked!");
-    });
-
-    const deleteButton = imageGrid.querySelector('#delete');
-    deleteButton.addEventListener('click', () => {
-      console.log("delete clicked!");
-    })
+    const cards = document.querySelectorAll('.card');
+    for (let card of cards) {
+      // Create a div to contain the buttons
+      const buttonsDiv = document.createElement('div');
+      buttonsDiv.classList.add('buttons');
+    
+      // Create two buttons
+      const button1 = document.createElement('button');
+      button1.textContent = 'Modifier';
+      button1.setAttribute('class', 'btn');
+      button1.addEventListener('click', () => console.log('edit clicked!'))
+    
+      const button2 = document.createElement('button');
+      button2.textContent = 'Supprimer';
+      button2.setAttribute('class', 'btn');
+      button2.addEventListener('click', () => console.log('delete clicked!'))
+    
+      // Add the buttons to the div
+      buttonsDiv.appendChild(button1);
+      buttonsDiv.appendChild(button2);
+    
+      // Append the div to the card
+      card.appendChild(buttonsDiv);
+    }
   })
   .catch(error => {
 
