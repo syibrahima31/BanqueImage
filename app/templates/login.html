@@ -5,18 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Image Bank App</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}"> -->
 </head>
 <body>
-  <div class="container">
-    <h1>Welcome to the Image Bank App</h1>
-    <p>Please select your user type:</p>
+  <div class="container" style="text-align: center;">
+    <h3>Bienvenue sur la banque d'images</h3>
+    <p>Sélectionnez votre profil:</p>
     <div class="user-types">
-      <a href="{{ url_for('contrib_bp.contrib-login') }}" class="user-type contributor">
-        <span class="icon">Contributor</span>
+      <a href="{{ url_for('contrib_bp.contrib-login') }}" class="btn user-type contributor">
+        <span class="icon">Contributeur</span>
       </a>
-      <a href="{{ url_for('users_bp.user-login') }}" class="user-type user">
-        <span class="icon">User</span>
+      <a href="{{ url_for('users_bp.user-login') }}" class="btn user-type user">
+        <span class="icon">Utilisateur</span>
       </a>
     </div>
   </div>

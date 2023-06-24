@@ -123,6 +123,15 @@ if(imageGrid){
       `
     });
     imageGrid.innerHTML = cardList.join('');
+    const editButton = imageGrid.querySelector('#edit');
+    editButton.addEventListener('click', () => {
+      console.log("edit clicked!");
+    });
+
+    const deleteButton = imageGrid.querySelector('#delete');
+    deleteButton.addEventListener('click', () => {
+      console.log("delete clicked!");
+    })
   })
   .catch(error => {
 
