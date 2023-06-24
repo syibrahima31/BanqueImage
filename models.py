@@ -101,6 +101,7 @@ class Image(db.Model):
     
     def render(self):
         return {
+            'id': self.id,
             'name': self.name,
             'url': self.image_url,
             'description': self.description,

@@ -43,7 +43,7 @@ def upload_image():
             uploaded_file.save(filepath)
             description = request.form.get('description')
             payment_needed = True if request.form.get('paiement') == 'true' else False
-            price = float(request.form.get('price')) if request.form.get('price') is not None else None
+            price = float(request.form.get('price')) if request.form.get('price') != '' else None
             contributor = Contributeur.query.get(session.get('_user_id'))
             with Img.open(filepath) as im:
                 image = Image(image_url=filepath,

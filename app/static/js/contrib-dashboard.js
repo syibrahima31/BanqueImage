@@ -43,29 +43,17 @@ async function loadContent(target) {
   contentDiv.appendChild(newContent);
   const form = document.querySelector('.upload-form');
   const checkboxInput = document.querySelector('#paiement');
-  const buttonInput = document.querySelector('#submit-button');
 
   if(checkboxInput){
     checkboxInput.addEventListener('change', (e) => {
-    const newDiv = document.createElement('div');
-    newDiv.setAttribute('id', 'price-section');
-    newDiv.style.cssText = 'margin-bottom: 10px;';
-    const newLabel = document.createElement('label');
-    newLabel.textContent = 'Price';
-    newLabel.style.cssText = 'display: block; margin-bottom: 5px;';
-    const newInput = document.createElement('input');
-    newInput.setAttribute('type', 'text');
-    newInput.setAttribute('name', 'price');
-    newInput.setAttribute('id', 'price');
-    newInput.style.cssText = 'border: 1px solid #ccc; padding: 5px;';
-    newDiv.appendChild(newLabel);
-    newDiv.appendChild(newInput);
-
-    if(checkboxInput.checked && !form.contains(document.querySelector('#price-section'))) {
-    form.insertBefore(newDiv, buttonInput);
+    if(checkboxInput.checked) {
+      console.log("Checked");
+      const priceBloc = document.querySelector('.price-bloc');
+      console.log(priceBloc);
+      priceBloc.setAttribute("style", "display: block;");
   } else {
-    const element = document.querySelector('#price-section');
-    element.remove();
+      const priceBloc = document.querySelector('.price-bloc');
+      priceBloc.setAttribute("style", "display: none;");
     }
   })
   }
@@ -95,7 +83,7 @@ async function loadContent(target) {
     })
     .then(response => response.json())
     .then(data => {
-      if(data.code_message === 200) {
+      if(data.code_message === "200") {
         M.toast({html: `${data.message}`, classes: 'green-toast'});
       } else {
         M.toast({html: `${data.message}`, classes: 'orange-toast'});
@@ -126,6 +114,10 @@ if(imageGrid){
             <div class="card-content">
               <label>Description: </label>
               <p>${item.description}</p>
+            </div>
+            <div class="card-buttons">
+              <button id="edit" class="btn">Modifier</button>
+              <button id="delete" class="btn">Supprimer</button>
             </div>
           </div>
       `
