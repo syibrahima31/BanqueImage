@@ -2,7 +2,6 @@ from database_instance import db
 from login_manager_instance import login_manager
 from enum import Enum, StrEnum
 from flask_login import UserMixin
-from flask import jsonify
 
 
 UTILISATEUR_ID = 'utilisateur.id'
@@ -117,12 +116,16 @@ class Image(db.Model):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Utilisateur.query.get(user_id)
+    user = Utilisateur.query.get(int(user_id))
+    if user:
+        return user
 
-@login_manager.user_loader
-def load_admin(user_id):
-    return Admin.query.get(user_id)
+    admin = Admin.query.get(int(user_id))
+    if admin:
+        return admin
 
-@login_manager.user_loader
-def load_contrib(user_id):
-    return Contributeur.query.get(user_id)
+    contributor = Contributeur.query.get(int(user_id))
+    if contributor:
+        return contributor
+    
+    return None

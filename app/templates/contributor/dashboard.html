@@ -12,11 +12,11 @@
   <header>
     <nav>
       <ul>
-        <li><a href="#" class="nav-link" data-target="home">Home</a></li>
-        <li><a href="#" class="nav-link" data-target="{{ url_for('static', filename='/components/contrib/upload.html') }}">Upload Image</a></li>
-        <li><a href="#" class="nav-link" data-target="{{ url_for('static', filename='/components/contrib/images.html') }}">My Images</a></li>
-        <li><a href="#" class="nav-link" data-target="settings">Settings</a></li>
-        <li><a href="#" class="nav-link" data-target="logout">Logout</a></li>
+        <li><a href="#" class="nav-link" data-target="home">Accueil</a></li>
+        <li><a href="#" class="nav-link" data-target="{{ url_for('static', filename='/components/contrib/upload.html') }}">Charger Image</a></li>
+        <li><a href="#" class="nav-link" data-target="{{ url_for('static', filename='/components/contrib/images.html') }}">Mes Images</a></li>
+        <li><a href="#" class="nav-link" data-target="settings">Règlages</a></li>
+        <li><a href="{{ url_for('contrib_bp.contrib-logout') }}" class="nav-link" data-target="logout">Déconnexion</a></li>
       </ul>
     </nav>
   </header>

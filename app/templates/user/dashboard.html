@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contributor Dashboard - Image Bank App</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='/css/user-dashboard.css') }}">
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="#" class="nav-link" data-target="{{ url_for('static', filename='/components/user/home-search.html') }}">Accueil</a></li>
+        <li><a href="#" class="nav-link" data-target="{{ url_for('static', filename='/components/user/images.html') }}">Mes Images</a></li>
+        <li><a href="#" class="nav-link" data-target="settings">Règlages</a></li>
+        <li><a href="{{ url_for('users_bp.user-logout') }}" class="nav-link" data-target="logout">Déconnexion</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div id="content" class="container">
+    <!-- Dynamic content here -->
+  </div>
+
+  <div id="modal2" class="modal modal-delete">
+    <div class="modal-content">
+      <h4>Action</h4>
+      <p>Voulez-vous supprimer l'image ?</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat delete-confirm">Oui</a>
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Non</a>
+    </div>
+  </div>
+
+  <div id="modal1" class="modal modal-edit">
+    <div class="modal-content">
+        <form class="file-edit">
+          <div class="input-field col s12">
+            <textarea id="new-description" name="description" class="materialize-textarea"></textarea>
+            <label for="textarea1">Description</label>
+          </div>
+          <button class="btn" id="submit-button" type="submit" style="cursor: pointer;">Edit</button>
+        </form>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat edit-confirm">Fermer</a>
+    </div>
+  </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='/js/user-dashboard.js') }}">
+    </script>
+</body>
+</html>

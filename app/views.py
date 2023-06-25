@@ -110,7 +110,6 @@ def dashboard():
 @contrib.route("/contributor/dashboard", endpoint="contrib-dashboard")
 @login_required
 def dashboard():
-    print(request.script_root)
     return render_template("contributor/dashboard.html")
 
 @contrib.route("/contributor/upload", endpoint="contrib-upload")
@@ -168,7 +167,15 @@ def subscribe():
         return jsonify({'message': 'User already registered', 'code_message': '400'})
 
 
-@users.route("/logout", endpoint="logout")
+@contrib.route("/contributor/logout", endpoint="contrib-logout")
+def logout():
+    logout_user()
+    if 'role' in session:
+        session.pop('role')
+    return redirect(url_for('contrib_bp.contrib-login'))
+
+
+@users.route("/user/logout", endpoint="user-logout")
 def logout():
     logout_user()
     if 'role' in session:
