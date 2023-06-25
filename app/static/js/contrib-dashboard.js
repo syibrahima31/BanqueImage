@@ -1,7 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-const elt = document.querySelector('.modal');
-const instance = M.Modal.init(elt);
+const firstModal = document.querySelector('.modal-delete');
+const firstInstance = M.Modal.init(firstModal);
+
+const secondModal = document.querySelector('.modal-edit');
+const secondInstance = M.Modal.init(secondModal);
 
 // Get the navigation links and content div
 const navLinks = document.querySelectorAll('.nav-link');
@@ -77,7 +80,6 @@ async function loadContent(target) {
     }
     formData.append('paiement', JSON.stringify(is_payment_required));
 
-
     fetch('/upload', {
       method: 'POST',
       body: formData
@@ -97,6 +99,9 @@ async function loadContent(target) {
 
   })
 }
+
+// Modal edition form
+const modalEditForm = document.querySelector('.file-edit');
 
 function getCardList(data) {
   return data.images.map((item) => `
@@ -124,14 +129,39 @@ function addCardButtons(cards){
     button1.textContent = 'Modifier';
     button1.setAttribute('class', 'waves-effect waves-light btn');
     button1.addEventListener('click', (e) => {
-      console.log('Implémenter modification');
+      secondInstance.open();
+      modalEditForm.onsubmit = (evt) => {
+        evt.preventDefault();
+        const newDescriptionInput = document.querySelector('#new-description');
+        const newDescriptionValue = newDescriptionInput.value.trim();
+        const id = e.target.parentNode.parentNode.querySelector('.image-id').dataset.id;
+        const modalFormData = {
+          description: newDescriptionValue
+        }
+        const editImageModalForm = Object.keys(modalFormData).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(modalFormData[key])}`).join('&');
+        fetch(`contributor/images/${id}/edit`, {
+          method: 'PATCH',
+          body: editImageModalForm
+        })
+        .then(response => response.json())
+        .then(data => {
+          if(data.code_message === "200"){
+            M.toast({html: `${data.message}`, classes: 'green-toast'});
+          } else {
+            M.toast({html: `${data.message}`, classes: 'orange-toast'});
+          }
+        })
+        .catch(error => {
+          M.toast({html: `${error}`, classes: 'red-toast'});
+        });
+      }
     })
   
     const button2 = document.createElement('button');
     button2.textContent = 'Supprimer';
     button2.setAttribute('class', 'waves-effect waves-light btn modal-trigger');
     button2.addEventListener('click', (e) => {
-        instance.open();
+        firstInstance.open();
         const imageDeletionTrigger = document.querySelector('.delete-confirm');
         imageDeletionTrigger.onclick = () => {
         const id = e.target.parentNode.parentNode.querySelector('.image-id').dataset.id;
@@ -204,8 +234,16 @@ if(imageGrid){
       a.setAttribute('href', '#!')
       a.textContent = i + 1;
       a.addEventListener('click', (e) => {
-        
-        e.target.parentNode.setAttribute('class', 'active');
+        const currentNode = e.target.parentNode;
+        currentNode.setAttribute('class', 'active');
+        const siblings = Array.from(e.target.parentNode.parentNode.childNodes);
+        siblings.map(node => {
+          if(node !== currentNode){
+            node.setAttribute('class', 'inactive');
+            node.setAttribute('style', 'background-color:none;');
+          }
+        })
+        e.target.parentNode.setAttribute('style', 'background-color: #26a69a;');
         const pageNumber = parseInt(e.target.innerText);
         updatedData = getPaginatedData(pageNumber, 2);
         updatedData.then(result => {
@@ -216,6 +254,11 @@ if(imageGrid){
       });
       li.appendChild(a);
       ul.appendChild(li);
+      const firstAnchor = Array.from(ul.querySelectorAll('a'))[1];
+      if(parseInt(firstAnchor.textContent) === data.current_page){
+        firstAnchor.parentNode.setAttribute('class', 'active');
+        firstAnchor.parentNode.setAttribute('style', 'background-color: #26a69a;');
+      }
     }
     const next = document.createElement('li');
     const next_anchor = document.createElement('a');

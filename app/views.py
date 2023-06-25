@@ -50,6 +50,18 @@ def delete(id):
         return jsonify({'message': 'Image deleted successfully', 'code_message': '200'})
     else:
         return jsonify({'message': 'Image doesn\'t exist', 'code_message': '400'})
+    
+@contrib.route("/contributor/images/<id>/edit", methods=['PATCH'])
+@login_required
+def edit(id):
+    description = request.form.get('description')
+    image = Image.query.filter_by(id=int(id)).first()
+    if image:
+        image.description = description
+        db.session.commit()
+        return jsonify({'message': 'Image updated successfully', 'code_message': '200'})
+    else:
+        return jsonify({'message': 'Image doesn\'t exist', 'code_message': '400'})
 
 @contrib.route("/upload", methods=["POST"])
 def upload_image():
