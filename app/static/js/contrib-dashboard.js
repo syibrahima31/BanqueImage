@@ -105,7 +105,7 @@ if(imageGrid){
   })
   .then(response => response.json())
   .then(data => {
-    const cardList = data.map((item) => {
+    const cardList = data.images.map((item) => {
      return `
           <div class="card">
             <input class="image-id" type="hidden" data-id="${item.id}">
@@ -139,9 +139,9 @@ if(imageGrid){
       button2.textContent = 'Supprimer';
       button2.setAttribute('class', 'waves-effect waves-light btn modal-trigger');
       button2.addEventListener('click', (e) => {
-        instance.open();
-        const imageDeletionTrigger = document.querySelector('.delete-confirm');
-        imageDeletionTrigger.onclick = () => {
+          instance.open();
+          const imageDeletionTrigger = document.querySelector('.delete-confirm');
+          imageDeletionTrigger.onclick = () => {
           const id = e.target.parentNode.parentNode.querySelector('.image-id').dataset.id;
           fetch(`/contributor/images/${id}/delete`, {
             method: 'DELETE'

@@ -28,7 +28,17 @@ def serve_image(image_name, mimetype):
 @contrib.route("/contributor/images")
 @login_required
 def index():
-    return [image.render() for image in Image.query.filter_by(contributeur_id=session.get('_user_id')).all()]
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('per_page', default=2, type=int)
+    images = Image.query.filter_by(contributeur_id=session.get('_user_id')).paginate(page=page, per_page=per_page)
+    response = {
+        'images': [image.render() for image in images.items],
+        'total_pages': images.pages,
+        'current_page': images.page,
+        'has_prev': images.has_prev,
+        'has_next': images.has_next
+    }
+    return jsonify(response)
 
 @contrib.route("/contributor/images/<id>/delete", methods=['DELETE'])
 @login_required
