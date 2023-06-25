@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, jsonify, request, redirect, url_for, session, send_file
 import os
 import json
+from urllib.parse import unquote_plus, parse_qs
 from werkzeug.utils import secure_filename
 from utilities import register_user, process_request
 from flask_login import logout_user, login_required, LoginManager
@@ -47,18 +48,23 @@ def delete(id):
     if image:
         db.session.delete(image)
         db.session.commit()
+        db.session.close()
         return jsonify({'message': 'Image deleted successfully', 'code_message': '200'})
     else:
         return jsonify({'message': 'Image doesn\'t exist', 'code_message': '400'})
     
-@contrib.route("/contributor/images/<id>/edit", methods=['PATCH'])
+@contrib.route("/contributor/images/<id>/edit", methods=['PUT'])
 @login_required
 def edit(id):
-    description = request.form.get('description')
+    data = request.get_data()
+    decoded_data = unquote_plus(data.decode('utf-8'))
+    parsed_data = parse_qs(decoded_data)
+    # print(parsed_data.get('description'))
     image = Image.query.filter_by(id=int(id)).first()
     if image:
-        image.description = description
+        image.description = parsed_data.get('description')[0]
         db.session.commit()
+        db.session.close()
         return jsonify({'message': 'Image updated successfully', 'code_message': '200'})
     else:
         return jsonify({'message': 'Image doesn\'t exist', 'code_message': '400'})
@@ -71,8 +77,6 @@ def upload_image():
             filename = uploaded_file.filename
             filename = secure_filename(filename)
             filepath = os.path.join('uploads', filename)
-            print('File path ', filepath)
-            print('File name ', filename)
             uploaded_file.save(filepath)
             description = request.form.get('description')
             payment_needed = True if request.form.get('paiement') == 'true' else False
@@ -91,6 +95,7 @@ def upload_image():
                               contributeur_id=contributor.id)
                 db.session.add(image)
                 db.session.commit()
+                db.session.close()
 
             return jsonify({'message': 'Image saved successfully', 'code_message': '200'})
         else:

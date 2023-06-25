@@ -139,8 +139,8 @@ function addCardButtons(cards){
           description: newDescriptionValue
         }
         const editImageModalForm = Object.keys(modalFormData).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(modalFormData[key])}`).join('&');
-        fetch(`contributor/images/${id}/edit`, {
-          method: 'PATCH',
+        fetch(`/contributor/images/${id}/edit`, {
+          method: 'PUT',
           body: editImageModalForm
         })
         .then(response => response.json())
