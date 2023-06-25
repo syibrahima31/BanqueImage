@@ -25,7 +25,7 @@ def serve_image(image_name, mimetype):
     base_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "uploads\\" + image_name)
     return send_file(base_dir, mimetype='image/' + mimetype)
 
-@contrib.route("/contributor/images")
+@contrib.route("/contributor/images", methods=['GET'])
 @login_required
 def index():
     page = request.args.get('page', default=1, type=int)

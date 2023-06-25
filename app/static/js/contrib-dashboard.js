@@ -98,6 +98,83 @@ async function loadContent(target) {
   })
 }
 
+function getCardList(data) {
+  return data.images.map((item) => `
+         <div class="card">
+          <input class="image-id" type="hidden" data-id="${item.id}">
+          <div class="image-card">
+            <img src="/contributor/images/${item.name}/${item.format.toLowerCase()}">
+            <span class="card-title">${item.name}</span>
+          </div>
+          <div class="card-content">
+            <label>Description: </label>
+            <p>${item.description}</p>
+          </div>
+        </div>
+    `).join('');
+}
+
+function addCardButtons(cards){
+  for (let card of cards) {
+    // Create a div to contain the buttons
+    const buttonsDiv = document.createElement('div');
+    buttonsDiv.classList.add('buttons');
+    // Create two buttons
+    const button1 = document.createElement('button');
+    button1.textContent = 'Modifier';
+    button1.setAttribute('class', 'waves-effect waves-light btn');
+    button1.addEventListener('click', (e) => {
+      console.log('Implémenter modification');
+    })
+  
+    const button2 = document.createElement('button');
+    button2.textContent = 'Supprimer';
+    button2.setAttribute('class', 'waves-effect waves-light btn modal-trigger');
+    button2.addEventListener('click', (e) => {
+        instance.open();
+        const imageDeletionTrigger = document.querySelector('.delete-confirm');
+        imageDeletionTrigger.onclick = () => {
+        const id = e.target.parentNode.parentNode.querySelector('.image-id').dataset.id;
+        fetch(`/contributor/images/${id}/delete`, {
+          method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+          M.toast({html: `${data.message}`, classes: "green-toast"});
+          e.target.parentNode.parentNode.remove();
+        })
+        .catch(error => {
+          M.toast({html: `${error}`, classes: "red-toast"});
+        })
+      }
+    })
+    button2.setAttribute('data-target', 'modal2')
+  
+    // Add the buttons to the div
+    buttonsDiv.appendChild(button1);
+    buttonsDiv.appendChild(button2);
+  
+    // Append the div to the card
+    card.appendChild(buttonsDiv);
+  }
+}
+
+async function getPaginatedData(page, per_page){
+  const pageDataObject = {
+    page: page,
+    per_page: per_page
+  }
+  const pageData = Object.keys(pageDataObject).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(pageDataObject[key])}`).join('&');
+  const fetchedData = await fetch(`/contributor/images?${pageData}`, {
+    method: 'GET'
+  })
+  .then(response => response.json())
+  .then(data => {
+    return data;
+  });
+  return fetchedData
+}
+
 const imageGrid = document.querySelector('.image-grid');
 if(imageGrid){
   fetch('/contributor/images', {
@@ -105,71 +182,72 @@ if(imageGrid){
   })
   .then(response => response.json())
   .then(data => {
-    const cardList = data.images.map((item) => {
-     return `
-          <div class="card">
-            <input class="image-id" type="hidden" data-id="${item.id}">
-            <div class="image-card">
-              <img src="/contributor/images/${item.name}/${item.format.toLowerCase()}">
-              <span class="card-title">${item.name}</span>
-            </div>
-            <div class="card-content">
-              <label>Description: </label>
-              <p>${item.description}</p>
-            </div>
-          </div>
-      `
-    });
-
-    imageGrid.innerHTML = cardList.join('');
-    const cards = document.querySelectorAll('.card');
-    for (let card of cards) {
-      // Create a div to contain the buttons
-      const buttonsDiv = document.createElement('div');
-      buttonsDiv.classList.add('buttons');
-      // Create two buttons
-      const button1 = document.createElement('button');
-      button1.textContent = 'Modifier';
-      button1.setAttribute('class', 'waves-effect waves-light btn');
-      button1.addEventListener('click', (e) => {
-        console.log('Implémenter modification');
-      })
-    
-      const button2 = document.createElement('button');
-      button2.textContent = 'Supprimer';
-      button2.setAttribute('class', 'waves-effect waves-light btn modal-trigger');
-      button2.addEventListener('click', (e) => {
-          instance.open();
-          const imageDeletionTrigger = document.querySelector('.delete-confirm');
-          imageDeletionTrigger.onclick = () => {
-          const id = e.target.parentNode.parentNode.querySelector('.image-id').dataset.id;
-          fetch(`/contributor/images/${id}/delete`, {
-            method: 'DELETE'
-          })
-          .then(response => response.json())
-          .then(data => {
-            M.toast({html: `${data.message}`, classes: "green-toast"});
-            e.target.parentNode.parentNode.remove();
-          })
-          .catch(error => {
-            M.toast({html: `${error}`, classes: "red-toast"});
-          })
-        }
-      })
-      button2.setAttribute('data-target', 'modal2')
-    
-      // Add the buttons to the div
-      buttonsDiv.appendChild(button1);
-      buttonsDiv.appendChild(button2);
-    
-      // Append the div to the card
-      card.appendChild(buttonsDiv);
+    var updatedData;
+    const ul = document.createElement('ul');
+    const previous = document.createElement('li');
+    const anchor = document.createElement('a');
+    anchor.setAttribute('href', '#!');
+    const icon = document.createElement('i');
+    icon.setAttribute('class', 'material-icons');
+    icon.textContent = 'chevron_left';
+    anchor.appendChild(icon);
+    previous.appendChild(anchor);
+    if(!data.has_prev){
+      previous.setAttribute('class', 'disabled');
     }
+    ul.setAttribute('class', 'pagination');
+    ul.appendChild(previous);
+    for(let i=0; i < data.total_pages; i++) {
+      const li = document.createElement('li');
+      li.setAttribute('class', 'waves-effect');
+      const a = document.createElement('a');
+      a.setAttribute('href', '#!')
+      a.textContent = i + 1;
+      a.addEventListener('click', (e) => {
+        
+        e.target.parentNode.setAttribute('class', 'active');
+        const pageNumber = parseInt(e.target.innerText);
+        updatedData = getPaginatedData(pageNumber, 2);
+        updatedData.then(result => {
+          imageGrid.innerHTML = getCardList(result);
+          const cards = document.querySelectorAll('.card');
+          addCardButtons(cards);
+        });
+      });
+      li.appendChild(a);
+      ul.appendChild(li);
+    }
+    const next = document.createElement('li');
+    const next_anchor = document.createElement('a');
+    next_anchor.setAttribute('href', '#!');
+    const next_icon = document.createElement('i');
+    next_icon.setAttribute('class', 'material-icons');
+    next_icon.textContent = 'chevron_right';
+    next_anchor.appendChild(next_icon);
+    next.appendChild(next_anchor);
+    if(!data.has_next){
+      next.setAttribute('class', 'disabled');
+    }
+    ul.appendChild(next);
+    // console.log('Nombre total de pages', data.total_pages)
+    // console.log('Page actuelle', data.current_page)
+    // console.log('contient_avant', data.has_prev)
+    // console.log('contient_après', data.has_next)
+    const cardList = getCardList(data);
+    imageGrid.innerHTML = cardList;
+    const cards = document.querySelectorAll('.card');
+    addCardButtons(cards);
+    
+    // imageGrid.innerHTML = cardList.join('');
+    const paginationBloc = document.querySelector('#pagination-bloc');
+    paginationBloc.appendChild(ul);
+    
   })
   .catch(error => {
     M.toast({html: `${error}`, classes: "red-toast"});
   })
 }
+
 }
 
 
