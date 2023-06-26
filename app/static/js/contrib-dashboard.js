@@ -212,7 +212,7 @@ if(imageGrid){
   })
   .then(response => response.json())
   .then(data => {
-    var updatedData;
+    let updatedData;
     const ul = document.createElement('ul');
     const previous = document.createElement('li');
     const anchor = document.createElement('a');
@@ -237,7 +237,7 @@ if(imageGrid){
         const currentNode = e.target.parentNode;
         currentNode.setAttribute('class', 'active');
         const siblings = Array.from(e.target.parentNode.parentNode.childNodes);
-        siblings.map(node => {
+        siblings.forEach(node => {
           if(node !== currentNode){
             node.setAttribute('class', 'inactive');
             node.setAttribute('style', 'background-color:none;');

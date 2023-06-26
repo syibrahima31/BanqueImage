@@ -1,10 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Empêche l'image d'être téléchargée en utilisant clic-droit
+  document.addEventListener('contextmenu', event => {
+    if (event.target.tagName === 'IMG') {
+      event.preventDefault();
+    }
+  });
 
-const firstModal = document.querySelector('.modal-delete');
-const firstInstance = M.Modal.init(firstModal);
+const modal = document.querySelector('.modal-image');
+const instance = M.Modal.init(modal);
 
-const secondModal = document.querySelector('.modal-edit');
-const secondInstance = M.Modal.init(secondModal);
+// const firstModal = document.querySelector('.modal-delete');
+// const firstInstance = M.Modal.init(firstModal);
+
+// const secondModal = document.querySelector('.modal-edit');
+// const secondInstance = M.Modal.init(secondModal);
 
 // Get the navigation links and content div
 const navLinks = document.querySelectorAll('.nav-link');
@@ -47,68 +56,68 @@ async function loadContent(target) {
   newContent.innerHTML = template;
   contentDiv.appendChild(newContent);
   const form = document.querySelector('.upload-form');
-  const checkboxInput = document.querySelector('#paiement');
+//   const checkboxInput = document.querySelector('#paiement');
 
-  if(checkboxInput){
-    checkboxInput.addEventListener('change', (e) => {
-    if(checkboxInput.checked) {
-      console.log("Checked");
-      const priceBloc = document.querySelector('.price-bloc');
-      priceBloc.setAttribute("style", "display: block;");
-  } else {
-      const priceBloc = document.querySelector('.price-bloc');
-      priceBloc.setAttribute("style", "display: none;");
-    }
-  })
-  }
+//   if(checkboxInput){
+//     checkboxInput.addEventListener('change', (e) => {
+//     if(checkboxInput.checked) {
+//       console.log("Checked");
+//       const priceBloc = document.querySelector('.price-bloc');
+//       priceBloc.setAttribute("style", "display: block;");
+//   } else {
+//       const priceBloc = document.querySelector('.price-bloc');
+//       priceBloc.setAttribute("style", "display: none;");
+//     }
+//   })
+//   }
 
-  if(form) {
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const fileInput = document.getElementById('image');
-    const descriptionInput = document.getElementById('description');
-    const paymentRequiredInput = document.getElementById('paiement');
-    const priceInput = document.getElementById('price');
-    const file = fileInput.files[0];
-    const description = descriptionInput.value;
-    const is_payment_required = paymentRequiredInput.checked;
-    const formData = new FormData()
-    formData.append('image', file);
-    formData.append('description', description);
-    if(priceInput){
-      formData.append('price', priceInput.value);
-    }
-    formData.append('paiement', JSON.stringify(is_payment_required));
+//   if(form) {
+//   form.addEventListener('submit', function(e) {
+//     e.preventDefault();
+//     const fileInput = document.getElementById('image');
+//     const descriptionInput = document.getElementById('description');
+//     const paymentRequiredInput = document.getElementById('paiement');
+//     const priceInput = document.getElementById('price');
+//     const file = fileInput.files[0];
+//     const description = descriptionInput.value;
+//     const is_payment_required = paymentRequiredInput.checked;
+//     const formData = new FormData()
+//     formData.append('image', file);
+//     formData.append('description', description);
+//     if(priceInput){
+//       formData.append('price', priceInput.value);
+//     }
+//     formData.append('paiement', JSON.stringify(is_payment_required));
 
-    fetch('/upload', {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-      if(data.code_message === "200") {
-        M.toast({html: `${data.message}`, classes: 'green-toast'});
-      } else {
-        M.toast({html: `${data.message}`, classes: 'orange-toast'});
-      }
-    })
-    .catch(error => {
-      console.log(error);
-      M.toast({html: `${error}`, classes: 'red-toast'});
-    })
+//     fetch('/upload', {
+//       method: 'POST',
+//       body: formData
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//       if(data.code_message === "200") {
+//         M.toast({html: `${data.message}`, classes: 'green-toast'});
+//       } else {
+//         M.toast({html: `${data.message}`, classes: 'orange-toast'});
+//       }
+//     })
+//     .catch(error => {
+//       console.log(error);
+//       M.toast({html: `${error}`, classes: 'red-toast'});
+//     })
 
-  })
-}
+//   })
+// }
 
 // Modal edition form
-const modalEditForm = document.querySelector('.file-edit');
+// const modalEditForm = document.querySelector('.file-edit');
 
 function getCardList(data) {
   return data.images.map((item) => `
          <div class="card">
           <input class="image-id" type="hidden" data-id="${item.id}">
           <div class="image-card">
-            <img src="/contributor/images/${item.name}/${item.format.toLowerCase()}">
+            <img class="displayed-image" src="/contributor/images/${item.name}/${item.format.toLowerCase()}">
             <span class="card-title">${item.name}</span>
           </div>
           <div class="card-content">
@@ -119,83 +128,13 @@ function getCardList(data) {
     `).join('');
 }
 
-function addCardButtons(cards){
-  for (let card of cards) {
-    // Create a div to contain the buttons
-    const buttonsDiv = document.createElement('div');
-    buttonsDiv.classList.add('buttons');
-    // Create two buttons
-    const button1 = document.createElement('button');
-    button1.textContent = 'Modifier';
-    button1.setAttribute('class', 'waves-effect waves-light btn');
-    button1.addEventListener('click', (e) => {
-      secondInstance.open();
-      modalEditForm.onsubmit = (evt) => {
-        evt.preventDefault();
-        const newDescriptionInput = document.querySelector('#new-description');
-        const newDescriptionValue = newDescriptionInput.value.trim();
-        const id = e.target.parentNode.parentNode.querySelector('.image-id').dataset.id;
-        const modalFormData = {
-          description: newDescriptionValue
-        }
-        const editImageModalForm = Object.keys(modalFormData).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(modalFormData[key])}`).join('&');
-        fetch(`/contributor/images/${id}/edit`, {
-          method: 'PUT',
-          body: editImageModalForm
-        })
-        .then(response => response.json())
-        .then(data => {
-          if(data.code_message === "200"){
-            M.toast({html: `${data.message}`, classes: 'green-toast'});
-          } else {
-            M.toast({html: `${data.message}`, classes: 'orange-toast'});
-          }
-        })
-        .catch(error => {
-          M.toast({html: `${error}`, classes: 'red-toast'});
-        });
-      }
-    })
-  
-    const button2 = document.createElement('button');
-    button2.textContent = 'Supprimer';
-    button2.setAttribute('class', 'waves-effect waves-light btn modal-trigger');
-    button2.addEventListener('click', (e) => {
-        firstInstance.open();
-        const imageDeletionTrigger = document.querySelector('.delete-confirm');
-        imageDeletionTrigger.onclick = () => {
-        const id = e.target.parentNode.parentNode.querySelector('.image-id').dataset.id;
-        fetch(`/contributor/images/${id}/delete`, {
-          method: 'DELETE'
-        })
-        .then(response => response.json())
-        .then(data => {
-          M.toast({html: `${data.message}`, classes: "green-toast"});
-          e.target.parentNode.parentNode.remove();
-        })
-        .catch(error => {
-          M.toast({html: `${error}`, classes: "red-toast"});
-        })
-      }
-    })
-    button2.setAttribute('data-target', 'modal2')
-  
-    // Add the buttons to the div
-    buttonsDiv.appendChild(button1);
-    buttonsDiv.appendChild(button2);
-  
-    // Append the div to the card
-    card.appendChild(buttonsDiv);
-  }
-}
-
 async function getPaginatedData(page, per_page){
   const pageDataObject = {
     page: page,
     per_page: per_page
   }
   const pageData = Object.keys(pageDataObject).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(pageDataObject[key])}`).join('&');
-  const fetchedData = await fetch(`/contributor/images?${pageData}`, {
+  const fetchedData = await fetch(`/user/images?${pageData}`, {
     method: 'GET'
   })
   .then(response => response.json())
@@ -205,14 +144,49 @@ async function getPaginatedData(page, per_page){
   return fetchedData
 }
 
+function previewImage(imageSrc) {
+  const previewImage = document.getElementById('previewImage');
+  // Create a FileReader object
+  const reader = new FileReader();
+  // Set up the FileReader onload event
+  reader.onload = () => {
+    // Set the source of the preview image to the FileReader result
+    previewImage.src = reader.result;
+  };
+  // Read the file as a data URL
+  fetch(imageSrc)
+  .then(response => response.blob())
+  .then(blob => {
+    // Use the created Blob object
+    reader.readAsDataURL(blob);
+    previewImage.setAttribute('style', 'display: block');
+    instance.open();
+  })
+  .catch(error => {
+    console.error('Error fetching file:', error);
+  });
+  
+  // reader.readAsDataURL(imageSrc);
+  // previewImage.setAttribute('style', 'display: block');
+}
+
+function addModals(listeImages){
+  const imageArray = Array.from(listeImages);
+  imageArray.forEach((image) => {
+  image.addEventListener('click', () => {
+    previewImage(image.src);
+  });
+});
+}
+
 const imageGrid = document.querySelector('.image-grid');
 if(imageGrid){
-  fetch('/contributor/images', {
+  fetch('/user/images', {
     method: 'GET',
   })
   .then(response => response.json())
   .then(data => {
-    var updatedData;
+    let updatedData;
     const ul = document.createElement('ul');
     const previous = document.createElement('li');
     const anchor = document.createElement('a');
@@ -237,7 +211,7 @@ if(imageGrid){
         const currentNode = e.target.parentNode;
         currentNode.setAttribute('class', 'active');
         const siblings = Array.from(e.target.parentNode.parentNode.childNodes);
-        siblings.map(node => {
+        siblings.forEach(node => {
           if(node !== currentNode){
             node.setAttribute('class', 'inactive');
             node.setAttribute('style', 'background-color:none;');
@@ -248,8 +222,8 @@ if(imageGrid){
         updatedData = getPaginatedData(pageNumber, 2);
         updatedData.then(result => {
           imageGrid.innerHTML = getCardList(result);
-          const cards = document.querySelectorAll('.card');
-          addCardButtons(cards);
+          const imageList = imageGrid.querySelectorAll('.displayed-image');
+          addModals(imageList);
         });
       });
       li.appendChild(a);
@@ -272,16 +246,11 @@ if(imageGrid){
       next.setAttribute('class', 'disabled');
     }
     ul.appendChild(next);
-    // console.log('Nombre total de pages', data.total_pages)
-    // console.log('Page actuelle', data.current_page)
-    // console.log('contient_avant', data.has_prev)
-    // console.log('contient_après', data.has_next)
+
     const cardList = getCardList(data);
     imageGrid.innerHTML = cardList;
-    const cards = document.querySelectorAll('.card');
-    addCardButtons(cards);
-    
-    // imageGrid.innerHTML = cardList.join('');
+    const imageList = imageGrid.querySelectorAll('.displayed-image');
+    addModals(imageList);
     const paginationBloc = document.querySelector('#pagination-bloc');
     paginationBloc.appendChild(ul);
     
@@ -290,6 +259,21 @@ if(imageGrid){
     M.toast({html: `${error}`, classes: "red-toast"});
   })
 }
+
+// function previewImage(imageSrc) {
+//   console.log(imageSrc);
+//   const previewImage = document.getElementById('previewImage');
+//   // Create a FileReader object
+//   const reader = new FileReader();
+//   // Set up the FileReader onload event
+//   reader.onload = () => {
+//     // Set the source of the preview image to the FileReader result
+//     previewImage.src = reader.result;
+//   };
+//   // Read the file as a data URL
+//   reader.readAsDataURL(imageSrc);
+//   previewImage.setAttribute('style', 'display: block');
+// }
 
 }
 

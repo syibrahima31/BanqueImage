@@ -2,6 +2,7 @@ from database_instance import db
 from login_manager_instance import login_manager
 from enum import Enum, StrEnum
 from flask_login import UserMixin
+from sqlalchemy import Text
 
 
 UTILISATEUR_ID = 'utilisateur.id'
@@ -95,6 +96,8 @@ class Image(db.Model):
     orientation = db.Column(db.Integer, nullable=True)
     status = db.Column(db.Enum(UploadStatusChoices, name="upload_status"), default=UploadStatusChoices.PENDING)
     payment_required = db.Column(db.Boolean, default=False)
+    existing_licence = db.Column(Text, nullable=True)
+    applied_licence = db.Column(db.String, nullable=True)
     price = db.Column(db.Float, nullable=True)
     contributeur_id = db.Column(db.Integer, db.ForeignKey('contributeur.id'))
     
@@ -112,6 +115,12 @@ class Image(db.Model):
             'payment_required': self.payment_required,
             'price': self.price
         }
+    
+
+class Licences(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String, nullable=True)
+    libelle = db.Column(db.String, nullable=True)
 
 
 @login_manager.user_loader

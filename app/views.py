@@ -28,7 +28,7 @@ def serve_image(image_name, mimetype):
 
 @contrib.route("/contributor/images", methods=['GET'])
 @login_required
-def index():
+def get_images():
     page = request.args.get('page', default=1, type=int)
     per_page = request.args.get('per_page', default=2, type=int)
     images = Image.query.filter_by(contributeur_id=session.get('_user_id')).paginate(page=page, per_page=per_page)
@@ -91,6 +91,7 @@ def upload_image():
                               width=im.width,
                               height=im.height,
                               payment_required=payment_needed,
+                              existing_licence=im.info.get('License') if im.info.get('License') is not None else im.info.get('license'),
                               price=price,
                               contributeur_id=contributor.id)
                 db.session.add(image)
@@ -153,6 +154,21 @@ def login():
 @users.route("/register", methods=['GET', 'POST'])
 def register():
     return render_template('registration.html')
+
+
+@users.route("/user/images", methods=['GET'])
+def get_images():
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('per_page', default=2, type=int)
+    images = Image.query.paginate(page=page, per_page=per_page)
+    response = {
+        'images': [image.render() for image in images.items],
+        'total_pages': images.pages,
+        'current_page': images.page,
+        'has_prev': images.has_prev,
+        'has_next': images.has_next
+    }
+    return jsonify(response)
 
 
 @users.route("/submit-registration", methods=['POST'])
