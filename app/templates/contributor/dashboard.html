@@ -16,7 +16,7 @@
         <li><a href="#" class="nav-link" data-target="{{ url_for('static', filename='/components/contrib/upload.html') }}">Charger Image</a></li>
         <li><a href="#" class="nav-link" data-target="{{ url_for('static', filename='/components/contrib/images.html') }}">Mes Images</a></li>
         <li><a href="#" class="nav-link" data-target="settings">Règlages</a></li>
-        <li><a href="{{ url_for('contrib_bp.contrib-logout') }}" class="nav-link" data-target="logout">Déconnexion</a></li>
+        <li><form action="{{ url_for('contrib_bp.contrib-logout') }}"><button type="submit" class="btn waves-effect" class="nav-link">Déconnexion</a></form></li>
       </ul>
     </nav>
   </header>

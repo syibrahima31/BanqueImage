@@ -93,7 +93,7 @@ class Image(db.Model):
     format = db.Column(db.String, nullable=True)
     width = db.Column(db.Integer, nullable=True)
     height = db.Column(db.Integer, nullable=True)
-    orientation = db.Column(db.Integer, nullable=True)
+    orientation = db.Column(db.String, nullable=True)
     status = db.Column(db.Enum(UploadStatusChoices, name="upload_status"), default=UploadStatusChoices.PENDING)
     payment_required = db.Column(db.Boolean, default=False)
     existing_licence = db.Column(Text, nullable=True)

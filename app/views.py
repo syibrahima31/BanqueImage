@@ -3,7 +3,7 @@ import os
 import json
 from urllib.parse import unquote_plus, parse_qs
 from werkzeug.utils import secure_filename
-from utilities import register_user, process_request
+from utilities import register_user, process_request, get_mode
 from flask_login import logout_user, login_required, LoginManager
 from models import Utilisateur, Contributeur, Image, Admin
 from database_instance import db
@@ -93,6 +93,7 @@ def upload_image():
                               payment_required=payment_needed,
                               existing_licence=im.info.get('License') if im.info.get('License') is not None else im.info.get('license'),
                               price=price,
+                              orientation=get_mode(im.width, im.height),
                               contributeur_id=contributor.id)
                 db.session.add(image)
                 db.session.commit()
