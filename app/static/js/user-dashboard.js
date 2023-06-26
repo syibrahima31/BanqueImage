@@ -147,6 +147,24 @@ async function getPaginatedData(page, per_page){
   return fetchedData
 }
 
+async function getSearchPaginatedData(page, per_page, endpoint, payload){
+  const pageDataObject = {
+    page: page,
+    per_page: per_page
+  }
+  const pageData = Object.keys(pageDataObject).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(pageDataObject[key])}`).join('&');
+  const fetchedData = await fetch(`${endpoint}?${pageData}`, {
+    method: 'POST',
+    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+    body: payload
+  })
+  .then(response => response.json())
+  .then(data => {
+    return data;
+  });
+  return fetchedData
+}
+
 function previewImage(imageSrc) {
   const previewImage = document.getElementById('previewImage');
   // Create a FileReader object
@@ -257,13 +275,6 @@ if(imageGrid){
     addModals(imageList);
     const paginationBloc = document.querySelector('#pagination-bloc');
     paginationBloc.appendChild(ul);
-
-    const formatSelect = document.querySelector('#format-select');
-    M.FormSelect.init(formatSelect);
-    const modeSelect = document.querySelector('#mode-select');
-    M.FormSelect.init(modeSelect);
-    const resolutionSelect = document.querySelector('#resolution-select');
-    M.FormSelect.init(resolutionSelect);
     // select.addEventListener('change', (e) => {
     //   console.log(select.value);
     // })
@@ -273,6 +284,113 @@ if(imageGrid){
     M.toast({html: `${error}`, classes: "red-toast"});
   })
 }
+
+    const formatSelect = document.querySelector('#format-select');
+    const fromatSelectInstance = M.FormSelect.init(formatSelect);
+    const modeSelect = document.querySelector('#mode-select');
+    const modeSelectInstance = M.FormSelect.init(modeSelect);
+    const resolutionSelect = document.querySelector('#resolution-select');
+    const resolutionSelectInstance = M.FormSelect.init(resolutionSelect);
+    const paymentCheckbox = document.querySelector('#pay-check');
+
+    const searchForm = document.getElementById("search-form");
+    searchForm.addEventListener('change', (e) => {
+      const formatValue = formatSelect.value;
+      const resolutionValue = resolutionSelect.value;
+      const modeValue = modeSelect.value;
+      const paymentValue = paymentCheckbox.checked;
+
+      const data = {
+        format: formatValue,
+        resolution: JSON.stringify(resolutionValue),
+        mode: modeValue,
+        payment: JSON.stringify(paymentValue)
+      }
+      const urlEncodedData = Object.keys(data).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`).join('&');
+      
+      fetch('/user/images/search', {
+        method: 'POST',
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        body: urlEncodedData
+      })
+      .then(response => response.json())
+      .then(data => {
+        let updatedData;
+        const ul = document.createElement('ul');
+        const previous = document.createElement('li');
+        const anchor = document.createElement('a');
+        anchor.setAttribute('href', '#!');
+        const icon = document.createElement('i');
+        icon.setAttribute('class', 'material-icons');
+        icon.textContent = 'chevron_left';
+        anchor.appendChild(icon);
+        previous.appendChild(anchor);
+        if(!data.has_prev){
+          previous.setAttribute('class', 'disabled');
+        }
+        ul.setAttribute('class', 'pagination');
+        ul.appendChild(previous);
+        for(let i=0; i < data.total_pages; i++) {
+          const li = document.createElement('li');
+          li.setAttribute('class', 'waves-effect');
+          const a = document.createElement('a');
+          a.setAttribute('href', '#!')
+          a.textContent = i + 1;
+          a.addEventListener('click', (e) => {
+            const currentNode = e.target.parentNode;
+            currentNode.setAttribute('class', 'active');
+            const siblings = Array.from(e.target.parentNode.parentNode.childNodes);
+            siblings.forEach(node => {
+              if(node !== currentNode){
+                node.setAttribute('class', 'inactive');
+                node.setAttribute('style', 'background-color:none;');
+              }
+            })
+            e.target.parentNode.setAttribute('style', 'background-color: #26a69a;');
+            const pageNumber = parseInt(e.target.innerText);
+            updatedData = getSearchPaginatedData(pageNumber, 2, '/user/images/search', urlEncodedData);
+            updatedData.then(result => {
+              imageGrid.innerHTML = getCardList(result);
+              const imageList = imageGrid.querySelectorAll('.displayed-image');
+              addModals(imageList);
+            });
+          });
+          li.appendChild(a);
+          ul.appendChild(li);
+          const firstAnchor = Array.from(ul.querySelectorAll('a'))[1];
+          if(parseInt(firstAnchor.textContent) === data.current_page){
+            firstAnchor.parentNode.setAttribute('class', 'active');
+            firstAnchor.parentNode.setAttribute('style', 'background-color: #26a69a;');
+          }
+        }
+        const next = document.createElement('li');
+        const next_anchor = document.createElement('a');
+        next_anchor.setAttribute('href', '#!');
+        const next_icon = document.createElement('i');
+        next_icon.setAttribute('class', 'material-icons');
+        next_icon.textContent = 'chevron_right';
+        next_anchor.appendChild(next_icon);
+        next.appendChild(next_anchor);
+        if(!data.has_next){
+          next.setAttribute('class', 'disabled');
+        }
+        ul.appendChild(next);
+
+        const cardList = getCardList(data);
+        imageGrid.innerHTML = cardList;
+        const imageList = imageGrid.querySelectorAll('.displayed-image');
+        addModals(imageList);
+        const paginationBloc = document.querySelector('#pagination-bloc');
+        const ulToReplace = paginationBloc.querySelector('ul');
+        paginationBloc.replaceChild(ul, ulToReplace);
+
+      })
+      .catch(error => {
+        M.toast({html: `${error}`, classes: "red-toast"});
+      })
+
+
+    })
 
 // function previewImage(imageSrc) {
 //   console.log(imageSrc);

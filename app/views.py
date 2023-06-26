@@ -109,10 +109,42 @@ def upload_image():
 def dashboard():
     return render_template("user/dashboard.html")
 
-@users.route("/user/images/search", methods=['GET'])
+@users.route("/user/images/search", methods=['POST'])
 @login_required
 def images_search():
-    return render_template("user/dashboard.html")
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('per_page', default=2, type=int)
+    image_format = request.form.get('format')
+    resolution = json.loads(request.form.get('resolution'))
+    mode = request.form.get('mode')
+    payment = json.loads(request.form.get('payment'))
+    query = Image.query
+    if image_format:
+        query = query.filter(Image.format.ilike(image_format))
+    if resolution:
+        res_type, first_resolution, second_resolution = resolution.split(',')
+        if res_type == 'faible':
+            query = query.filter(Image.taille < int(first_resolution))
+        if res_type == 'haute':
+            query = query.filter(Image.taille > int(first_resolution))
+        else:
+            query = query.filter(Image.taille >= int(first_resolution), Image.taille <= int(second_resolution))
+    
+    if mode:
+        query = query.filter(Image.orientation.ilike(mode))
+    if payment:
+        print(payment)
+        query = query.filter(Image.payment_required == payment)
+            
+    images = query.paginate(page=page, per_page=per_page)
+    response = {
+        'images': [image.render() for image in images.items],
+        'total_pages': images.pages,
+        'current_page': images.page,
+        'has_prev': images.has_prev,
+        'has_next': images.has_next
+    }
+    return jsonify(response)
 
 @contrib.route("/contributor/dashboard", endpoint="contrib-dashboard")
 @login_required

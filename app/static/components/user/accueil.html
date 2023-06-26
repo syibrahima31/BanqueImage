@@ -1,6 +1,7 @@
+<div>
 <div id="search-bar">
     <nav>
-        <form class="col s12">
+        <form id="search-form" class="col s12">
             <div class="row" style="padding-left: 7px; padding-right: 7px">
                 <div class="input-field col s3">
                     <select id="format-select">
@@ -16,15 +17,15 @@
                 <div class="input-field col s3">
                     <select id="resolution-select">
                         <option value="" disabled selected>Choisissez la résolution</option>
-                        <option value="480000">Faible < (800x600)</option>
-                        <option value="[480000, 2073600]">Moyenne (800x600 à 1920x1080)</option>
-                        <option value="2073600">Haute > (1920x1080) </option>
+                        <option value="faible,480000,0">Faible < (800x600)</option>
+                        <option value="moyenne,480000, 2073600">Moyenne (800x600 à 1920x1080)</option>
+                        <option value="haute,2073600,0">Haute > (1920x1080) </option>
                     </select>
                 </div>
                 <div class="input-field col s3">
                     <div>
                         <label>
-                            <input style="background-color: none;" class="filled-in" type="checkbox" />
+                            <input id="pay-check" style="background-color: none;" class="filled-in" type="checkbox" />
                             <span style="color:white;">Payant ?</span>
                         </label>
                     </div>
@@ -47,4 +48,5 @@
 
 <div id="pagination-bloc"style="margin-top: 20px">
     
+</div>
 </div>

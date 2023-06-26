@@ -192,13 +192,13 @@ function addCardButtons(cards){
   }
 }
 
-async function getPaginatedData(page, per_page){
+async function getPaginatedData(page, per_page, endpoint){
   const pageDataObject = {
     page: page,
     per_page: per_page
   }
   const pageData = Object.keys(pageDataObject).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(pageDataObject[key])}`).join('&');
-  const fetchedData = await fetch(`/contributor/images?${pageData}`, {
+  const fetchedData = await fetch(`${endpoint}?${pageData}`, {
     method: 'GET'
   })
   .then(response => response.json())
@@ -248,7 +248,7 @@ if(imageGrid){
         })
         e.target.parentNode.setAttribute('style', 'background-color: #26a69a;');
         const pageNumber = parseInt(e.target.innerText);
-        updatedData = getPaginatedData(pageNumber, 2);
+        updatedData = getPaginatedData(pageNumber, 2, '/contributor/images');
         updatedData.then(result => {
           imageGrid.innerHTML = getCardList(result);
           const cards = document.querySelectorAll('.card');
