@@ -24,6 +24,9 @@ function navigate(event) {
   loadContent(target);
 }
 
+// const home = document.querySelector('.nav-link');
+// home.click();
+
 // Function to load content based on the target
 async function loadContent(target) {
   // Perform any necessary logic based on the target
@@ -108,7 +111,7 @@ function getCardList(data) {
          <div class="card">
           <input class="image-id" type="hidden" data-id="${item.id}">
           <div class="image-card">
-            <img src="/contributor/images/${item.name}/${item.format.toLowerCase()}">
+            <img class="responsive-img" src="/contributor/images/${item.name}/${item.format.toLowerCase()}">
             <span class="card-title">${item.name}</span>
           </div>
           <div class="card-content">

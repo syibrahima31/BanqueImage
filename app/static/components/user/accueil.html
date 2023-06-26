@@ -1,22 +1,40 @@
 <div id="search-bar">
     <nav>
         <form class="col s12">
-            <div class="row">
+            <div class="row" style="padding-left: 7px; padding-right: 7px">
                 <div class="input-field col s3">
-                  <input id="format" type="text" class="validate">
-                  <label for="format">Format</label>
+                    <select id="format-select">
+                        <option value="" disabled selected>Choisissez le format</option>
+                        <option value="JPEG">JPEG</option>
+                        <option value="PNG">PNG</option>
+                        <option value="GIF">GIF</option>
+                        <option value="BMP">BMP</option>
+                        <option value="WEBP">WEBP</option>
+                        <option value="Autre">Autre</option>
+                    </select>
                 </div>
                 <div class="input-field col s3">
-                  <input id="resolution" type="text" class="validate">
-                  <label for="resolution">Résolution</label>
+                    <select id="resolution-select">
+                        <option value="" disabled selected>Choisissez la résolution</option>
+                        <option value="480000">Faible < (800x600)</option>
+                        <option value="[480000, 2073600]">Moyenne (800x600 à 1920x1080)</option>
+                        <option value="2073600">Haute > (1920x1080) </option>
+                    </select>
                 </div>
                 <div class="input-field col s3">
-                    <input id="payant" type="text" class="validate">
-                    <label for="payant">Payant</label>
+                    <div>
+                        <label>
+                            <input style="background-color: none;" class="filled-in" type="checkbox" />
+                            <span style="color:white;">Payant ?</span>
+                        </label>
+                    </div>
                 </div>
                 <div class="input-field col s3">
-                    <input id="mode" type="text" class="validate">
-                    <label for="mode">Mode</label>
+                    <select id="mode-select">
+                        <option value="" disabled selected>Choisissez le mode</option>
+                        <option value="PORTRAIT">Portrait</option>
+                        <option value="PAYSAGE">Paysage</option>
+                    </select>
                 </div>
             </div>
         </form>

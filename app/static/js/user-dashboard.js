@@ -33,6 +33,9 @@ function navigate(event) {
   loadContent(target);
 }
 
+const home = document.querySelector('.nav-link');
+home.click();
+
 // Function to load content based on the target
 async function loadContent(target) {
   // Perform any necessary logic based on the target
@@ -117,7 +120,7 @@ function getCardList(data) {
          <div class="card">
           <input class="image-id" type="hidden" data-id="${item.id}">
           <div class="image-card">
-            <img class="displayed-image" src="/contributor/images/${item.name}/${item.format.toLowerCase()}">
+            <img class="displayed-image responsive-img" src="/contributor/images/${item.name}/${item.format.toLowerCase()}">
             <span class="card-title">${item.name}</span>
           </div>
           <div class="card-content">
@@ -160,6 +163,7 @@ function previewImage(imageSrc) {
     // Use the created Blob object
     reader.readAsDataURL(blob);
     previewImage.setAttribute('style', 'display: block');
+    previewImage.setAttribute('class', 'materialboxed');
     instance.open();
   })
   .catch(error => {
@@ -253,6 +257,16 @@ if(imageGrid){
     addModals(imageList);
     const paginationBloc = document.querySelector('#pagination-bloc');
     paginationBloc.appendChild(ul);
+
+    const formatSelect = document.querySelector('#format-select');
+    M.FormSelect.init(formatSelect);
+    const modeSelect = document.querySelector('#mode-select');
+    M.FormSelect.init(modeSelect);
+    const resolutionSelect = document.querySelector('#resolution-select');
+    M.FormSelect.init(resolutionSelect);
+    // select.addEventListener('change', (e) => {
+    //   console.log(select.value);
+    // })
     
   })
   .catch(error => {

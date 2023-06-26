@@ -109,6 +109,11 @@ def upload_image():
 def dashboard():
     return render_template("user/dashboard.html")
 
+@users.route("/user/images/search", methods=['GET'])
+@login_required
+def images_search():
+    return render_template("user/dashboard.html")
+
 @contrib.route("/contributor/dashboard", endpoint="contrib-dashboard")
 @login_required
 def dashboard():
