@@ -125,7 +125,11 @@ def images_search():
     resolution = json.loads(request.form.get('resolution'))
     mode = request.form.get('mode')
     payment = json.loads(request.form.get('payment'))
-    query = Image.query
+    print(resolution, type(resolution))
+    print(image_format, type(image_format))
+    print(mode, type(mode))
+    print(payment, type(payment))
+    query = Image.query.filter_by(status='VALIDATED')
     if image_format:
         query = query.filter(Image.format.ilike(image_format))
     if resolution:
@@ -205,7 +209,7 @@ def register():
 def get_images():
     page = request.args.get('page', default=1, type=int)
     per_page = request.args.get('per_page', default=2, type=int)
-    images = Image.query.paginate(page=page, per_page=per_page)
+    images = Image.query.filter_by(status='VALIDATED').paginate(page=page, per_page=per_page)
     response = {
         'images': [image.render() for image in images.items],
         'total_pages': images.pages,
@@ -242,3 +246,10 @@ def logout():
     if 'role' in session:
         session.pop('role')
     return redirect(url_for('users_bp.user-login'))
+
+@users.route("/admin/logout", endpoint="admin-logout")
+def logout():
+    logout_user()
+    if 'role' in session:
+        session.pop('role')
+    return redirect(url_for('admin_bp.admin-login'))
