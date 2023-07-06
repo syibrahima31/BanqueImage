@@ -3,7 +3,7 @@ import os
 import json
 from urllib.parse import unquote_plus, parse_qs
 from werkzeug.utils import secure_filename
-from utilities import register_user, process_request, get_mode
+from utilities import register_user, process_request, get_mode, apply_watermark
 from flask_login import logout_user, login_required, LoginManager
 from models import Utilisateur, Contributeur, Image, Admin
 from database_instance import db
@@ -23,7 +23,7 @@ def index():
 
 @contrib.route("/contributor/images/<path:image_name>/<mimetype>")
 def serve_image(image_name, mimetype):
-    base_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "uploads\\" + image_name)
+    base_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "watermarked_images\\" + image_name)
     return send_file(base_dir, mimetype='image/' + mimetype)
 
 @contrib.route("/contributor/images", methods=['GET'])
@@ -77,13 +77,18 @@ def upload_image():
             filename = uploaded_file.filename
             filename = secure_filename(filename)
             filepath = os.path.join('uploads', filename)
+            watermark_filepath = os.path.join('watermarked_images', filename)
             uploaded_file.save(filepath)
+            apply_watermark(filepath, watermark_filepath, 65)
             description = request.form.get('description')
+            title = request.form.get('title')
+            auteur = request.form.get('auteur')
             payment_needed = True if request.form.get('paiement') == 'true' else False
             price = float(request.form.get('price')) if request.form.get('price') != '' else None
             contributor = Contributeur.query.get(session.get('_user_id'))
             with Img.open(filepath) as im:
                 image = Image(image_url=filepath,
+                              watermark_image_url=watermark_filepath,
                               description=description,
                               name=filename,
                               taille=(im.width * im.height),
@@ -93,6 +98,8 @@ def upload_image():
                               payment_required=payment_needed,
                               existing_licence=im.info.get('License') if im.info.get('License') is not None else im.info.get('license'),
                               price=price,
+                              title=title,
+                              auteur=auteur,
                               orientation=get_mode(im.width, im.height),
                               contributeur_id=contributor.id)
                 db.session.add(image)

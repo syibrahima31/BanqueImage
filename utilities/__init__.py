@@ -6,6 +6,7 @@ from flask import jsonify, session
 from flask_login import login_user
 from cryptography.fernet import Fernet
 from models import Admin
+from PIL import Image, ImageDraw, ImageFont
 from dotenv import load_dotenv
 
 
@@ -53,3 +54,27 @@ def is_admin(role):
 
 def get_mode(width, height):
     return 'LANDSCAPE' if width > height else 'PORTRAIT'
+
+
+def apply_watermark(image_path, watermark_path, opacity_param=None):
+    background_image = Image.open(image_path)
+    # watermark_image = Image.open('watermarked_images/django.jpg')
+
+    # Create a draw object for the background image
+    draw = ImageDraw.Draw(background_image)
+
+    # TEXT WATERMARK
+    # Set the font and the size of the watermark text
+    font = ImageFont.truetype('arial.ttf', 45)
+
+    # Draw the watermark text on the background image
+    draw.text((45, 30), 'AskData Group', font=font, fill='black')
+
+    # opacity = opacity_param
+
+    # paste_mask = watermark_image.getchannel(1).point(lambda i: i * opacity / 100.)
+    # # converted_image = background_image.convert(watermark_image.mode)
+    # background_image.paste(watermark_image, (0, 0), mask=paste_mask)
+
+    # Save the watermarked image
+    background_image.save(watermark_path)

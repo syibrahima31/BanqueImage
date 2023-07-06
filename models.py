@@ -86,9 +86,12 @@ class Image(db.Model):
     __tablename__ = 'image'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
+    auteur = db.Column(db.String, nullable=True)
+    title = db.Column(db.String, nullable=True)
     image_url = db.Column(db.String)
+    watermark_image_url = db.Column(db.String)
     tags = db.Column(db.String)
-    description = db.Column(db.String)
+    description = db.Column(db.String, nullable=True)
     taille = db.Column(db.Integer, nullable=True)
     format = db.Column(db.String, nullable=True)
     width = db.Column(db.Integer, nullable=True)

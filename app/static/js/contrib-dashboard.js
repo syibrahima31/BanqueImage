@@ -72,12 +72,18 @@ async function loadContent(target) {
     const descriptionInput = document.getElementById('description');
     const paymentRequiredInput = document.getElementById('paiement');
     const priceInput = document.getElementById('price');
+    const titleInput = document.getElementById('title');
+    const auteurInput = document.getElementById('auteur');
     const file = fileInput.files[0];
     const description = descriptionInput.value;
+    const title = titleInput.value;
+    const auteur = auteurInput.value;
     const is_payment_required = paymentRequiredInput.checked;
     const formData = new FormData()
     formData.append('image', file);
     formData.append('description', description);
+    formData.append('title', title);
+    formData.append('auteur', auteur);
     if(priceInput){
       formData.append('price', priceInput.value);
     }
@@ -175,6 +181,8 @@ function addCardButtons(cards){
         .then(data => {
           M.toast({html: `${data.message}`, classes: "green-toast"});
           e.target.parentNode.parentNode.remove();
+          const imagesLink = Array.from(document.querySelectorAll('.nav-link'))[2];
+          imagesLink.click();
         })
         .catch(error => {
           M.toast({html: `${error}`, classes: "red-toast"});
