@@ -70,6 +70,54 @@
     margin-bottom: 20px;
   }
 
+  /* .ribbon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    overflow: hidden;
+    width: 100px; */
+    /* height: 100px;  */
+    /* background-color: gray;
+    color: #fff;
+    text-align: center;
+    transform: rotate(45deg);
+  } */
+  
+  /* .ribbon span {
+    display: block;
+    transform: rotate(-45deg);
+    padding: 5px;
+    font-weight: bold;
+    font-size: 14px;
+  } */
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 75%;
+    height: 75%;
+    overflow: auto;
+    /* background-color: rgba(0, 0, 0, 0.9); */
+  }
+  
+  .modal-content {
+    margin: auto;
+    display: block;
+    max-width: 75%;
+    max-height: 75%;
+  }
+
+  .close {
+    color: #fff;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
   .card {
     position: relative;
     border: 1px solid #ccc;

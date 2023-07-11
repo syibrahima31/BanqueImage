@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 const modal = document.querySelector('.modal-image');
-const instance = M.Modal.init(modal);
+const modalInstance = M.Modal.init(modal);
 
 // const firstModal = document.querySelector('.modal-delete');
 // const firstInstance = M.Modal.init(firstModal);
@@ -119,8 +119,11 @@ function getCardList(data) {
   return data.images.map((item) => `
          <div class="card">
           <input class="image-id" type="hidden" data-id="${item.id}">
+          <input class="image-auteur" type="hidden" data-auteur="${item.auteur}">
+          <input class="image-title" type="hidden" data-title="${item.title}">
+          <input class="image-licence" type="hidden" data-title="${item.licence}">
           <div class="image-card">
-            <img class="displayed-image responsive-img" src="/contributor/images/${item.name}/${item.format.toLowerCase()}">
+            <img class="materialboxed displayed-image responsive-img" src="/contributor/images/${item.name}/${item.format.toLowerCase()}">
             <span class="card-title">${item.name}</span>
           </div>
           <div class="card-content">
@@ -168,25 +171,25 @@ async function getSearchPaginatedData(page, per_page, endpoint, payload){
 function previewImage(imageSrc) {
   const previewImage = document.getElementById('previewImage');
   // Create a FileReader object
-  const reader = new FileReader();
+  // const reader = new FileReader();
   // Set up the FileReader onload event
-  reader.onload = () => {
+  // reader.onload = () => {
     // Set the source of the preview image to the FileReader result
-    previewImage.src = reader.result;
-  };
+  //   previewImage.src = reader.result;
+  // };
   // Read the file as a data URL
-  fetch(imageSrc)
-  .then(response => response.blob())
-  .then(blob => {
+  // fetch(imageSrc)
+  // .then(response => response.blob())
+  // .then(blob => {
     // Use the created Blob object
-    reader.readAsDataURL(blob);
+    // reader.readAsDataURL(blob);
     previewImage.setAttribute('style', 'display: block');
     previewImage.setAttribute('class', 'materialboxed');
-    instance.open();
-  })
-  .catch(error => {
-    console.error('Error fetching file:', error);
-  });
+  //   modalInstance.open();
+  // })
+  // .catch(error => {
+  //   console.error('Error fetching file:', error);
+  // });
   
   // reader.readAsDataURL(imageSrc);
   // previewImage.setAttribute('style', 'display: block');
@@ -195,8 +198,10 @@ function previewImage(imageSrc) {
 function addModals(listeImages){
   const imageArray = Array.from(listeImages);
   imageArray.forEach((image) => {
-  image.addEventListener('click', () => {
-    previewImage(image.src);
+  image.addEventListener('click', (e) => {
+    const instance = M.Materialbox.init(e.target);
+    console.log(instance)
+    instance.open();
   });
 });
 }

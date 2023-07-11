@@ -24,6 +24,10 @@ function navigate(event) {
   loadContent(target);
 }
 
+const app = {
+  content: document.querySelector('#content')
+}
+
 // const home = document.querySelector('.nav-link');
 // home.click();
 
@@ -112,93 +116,115 @@ async function loadContent(target) {
 // Modal edition form
 const modalEditForm = document.querySelector('.file-edit');
 
+{/* <div class="card">
+<input class="image-id" type="hidden" data-id="${item.id}">
+<div class="image-card">
+  <img class="responsive-img" src="/contributor/images/${item.name}/${item.format.toLowerCase()}">
+  <span class="card-title">${item.name}</span>
+</div>
+<div class="card-content">
+  <label>Description: </label>
+  <p>${item.description}</p>
+</div>
+</div> */}
+
 function getCardList(data) {
   return data.images.map((item) => `
-         <div class="card">
+      <div class="col-md-4">
+        <div class="card">
           <input class="image-id" type="hidden" data-id="${item.id}">
-          <div class="image-card">
-            <img class="responsive-img" src="/contributor/images/${item.name}/${item.format.toLowerCase()}">
-            <span class="card-title">${item.name}</span>
+          <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+            <img src="/contributor/images/${item.name}/${item.format.toLowerCase()}" class="img-fluid"/>
+            <a href="#!">
+              <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+            </a>
           </div>
-          <div class="card-content">
-            <label>Description: </label>
-            <p>${item.description}</p>
+          <div class="card-body container">
+            <div class="row">
+              <div class="col">
+                <a href="#!" class="btn btn-primary">Preview</a>
+              </div>
+              <div class="col">
+                <a href="#!" class="btn btn-primary">Details</a>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
     `).join('');
 }
 
-function addCardButtons(cards){
-  for (let card of cards) {
-    // Create a div to contain the buttons
-    const buttonsDiv = document.createElement('div');
-    buttonsDiv.classList.add('buttons');
-    // Create two buttons
-    const button1 = document.createElement('button');
-    button1.textContent = 'Modifier';
-    button1.setAttribute('class', 'waves-effect waves-light btn');
-    button1.addEventListener('click', (e) => {
-      secondInstance.open();
-      modalEditForm.onsubmit = (evt) => {
-        evt.preventDefault();
-        const newDescriptionInput = document.querySelector('#new-description');
-        const newDescriptionValue = newDescriptionInput.value.trim();
-        const id = e.target.parentNode.parentNode.querySelector('.image-id').dataset.id;
-        const modalFormData = {
-          description: newDescriptionValue
-        }
-        const editImageModalForm = Object.keys(modalFormData).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(modalFormData[key])}`).join('&');
-        fetch(`/contributor/images/${id}/edit`, {
-          method: 'PUT',
-          body: editImageModalForm
-        })
-        .then(response => response.json())
-        .then(data => {
-          if(data.code_message === "200"){
-            M.toast({html: `${data.message}`, classes: 'green-toast'});
-          } else {
-            M.toast({html: `${data.message}`, classes: 'orange-toast'});
-          }
-        })
-        .catch(error => {
-          M.toast({html: `${error}`, classes: 'red-toast'});
-        });
-      }
-    })
+// function addCardButtons(cards){
+//   for (let card of cards) {
+//     // Create a div to contain the buttons
+//     const buttonsDiv = document.createElement('div');
+//     buttonsDiv.classList.add('buttons');
+//     // Create two buttons
+//     const button1 = document.createElement('button');
+//     button1.textContent = 'Modifier';
+//     button1.setAttribute('class', 'waves-effect waves-light btn');
+//     button1.addEventListener('click', (e) => {
+//       secondInstance.open();
+//       modalEditForm.onsubmit = (evt) => {
+//         evt.preventDefault();
+//         const newDescriptionInput = document.querySelector('#new-description');
+//         const newDescriptionValue = newDescriptionInput.value.trim();
+//         const id = e.target.parentNode.parentNode.querySelector('.image-id').dataset.id;
+//         const modalFormData = {
+//           description: newDescriptionValue
+//         }
+//         const editImageModalForm = Object.keys(modalFormData).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(modalFormData[key])}`).join('&');
+//         fetch(`/contributor/images/${id}/edit`, {
+//           method: 'PUT',
+//           body: editImageModalForm
+//         })
+//         .then(response => response.json())
+//         .then(data => {
+//           if(data.code_message === "200"){
+//             M.toast({html: `${data.message}`, classes: 'green-toast'});
+//           } else {
+//             M.toast({html: `${data.message}`, classes: 'orange-toast'});
+//           }
+//         })
+//         .catch(error => {
+//           M.toast({html: `${error}`, classes: 'red-toast'});
+//         });
+//       }
+//     })
   
-    const button2 = document.createElement('button');
-    button2.textContent = 'Supprimer';
-    button2.setAttribute('class', 'waves-effect waves-light btn modal-trigger');
-    button2.addEventListener('click', (e) => {
-        firstInstance.open();
-        const imageDeletionTrigger = document.querySelector('.delete-confirm');
-        imageDeletionTrigger.onclick = () => {
-        const id = e.target.parentNode.parentNode.querySelector('.image-id').dataset.id;
-        fetch(`/contributor/images/${id}/delete`, {
-          method: 'DELETE'
-        })
-        .then(response => response.json())
-        .then(data => {
-          M.toast({html: `${data.message}`, classes: "green-toast"});
-          e.target.parentNode.parentNode.remove();
-          const imagesLink = Array.from(document.querySelectorAll('.nav-link'))[2];
-          imagesLink.click();
-        })
-        .catch(error => {
-          M.toast({html: `${error}`, classes: "red-toast"});
-        })
-      }
-    })
-    button2.setAttribute('data-target', 'modal2')
+//     const button2 = document.createElement('button');
+//     button2.textContent = 'Supprimer';
+//     button2.setAttribute('class', 'waves-effect waves-light btn modal-trigger');
+//     button2.addEventListener('click', (e) => {
+//         firstInstance.open();
+//         const imageDeletionTrigger = document.querySelector('.delete-confirm');
+//         imageDeletionTrigger.onclick = () => {
+//         const id = e.target.parentNode.parentNode.querySelector('.image-id').dataset.id;
+//         fetch(`/contributor/images/${id}/delete`, {
+//           method: 'DELETE'
+//         })
+//         .then(response => response.json())
+//         .then(data => {
+//           M.toast({html: `${data.message}`, classes: "green-toast"});
+//           e.target.parentNode.parentNode.remove();
+//           const imagesLink = Array.from(document.querySelectorAll('.nav-link'))[2];
+//           imagesLink.click();
+//         })
+//         .catch(error => {
+//           M.toast({html: `${error}`, classes: "red-toast"});
+//         })
+//       }
+//     })
+//     button2.setAttribute('data-target', 'modal2')
   
-    // Add the buttons to the div
-    buttonsDiv.appendChild(button1);
-    buttonsDiv.appendChild(button2);
+//     // Add the buttons to the div
+//     buttonsDiv.appendChild(button1);
+//     buttonsDiv.appendChild(button2);
   
-    // Append the div to the card
-    card.appendChild(buttonsDiv);
-  }
-}
+//     // Append the div to the card
+//     card.appendChild(buttonsDiv);
+//   }
+// }
 
 async function getPaginatedData(page, per_page, endpoint){
   const pageDataObject = {
@@ -260,7 +286,7 @@ if(imageGrid){
         updatedData.then(result => {
           imageGrid.innerHTML = getCardList(result);
           const cards = document.querySelectorAll('.card');
-          addCardButtons(cards);
+          // addCardButtons(cards);
         });
       });
       li.appendChild(a);
@@ -290,7 +316,7 @@ if(imageGrid){
     const cardList = getCardList(data);
     imageGrid.innerHTML = cardList;
     const cards = document.querySelectorAll('.card');
-    addCardButtons(cards);
+    // addCardButtons(cards);
     
     // imageGrid.innerHTML = cardList.join('');
     const paginationBloc = document.querySelector('#pagination-bloc');

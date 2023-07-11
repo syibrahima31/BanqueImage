@@ -16,10 +16,14 @@ admin = Blueprint("admin_bp", __name__)
 login_manager = LoginManager()
 
 
+@users.route("/index")
+def test():
+    return render_template('main.html')
+
 @users.route("/")
 @login_required
 def index():
-    return render_template('index.html')
+    return redirect(url_for('users_bp.landing'))
 
 @contrib.route("/contributor/images/<path:image_name>/<mimetype>")
 def serve_image(image_name, mimetype):
@@ -125,10 +129,6 @@ def images_search():
     resolution = json.loads(request.form.get('resolution'))
     mode = request.form.get('mode')
     payment = json.loads(request.form.get('payment'))
-    print(resolution, type(resolution))
-    print(image_format, type(image_format))
-    print(mode, type(mode))
-    print(payment, type(payment))
     query = Image.query.filter_by(status='VALIDATED')
     if image_format:
         query = query.filter(Image.format.ilike(image_format))
@@ -144,7 +144,6 @@ def images_search():
     if mode:
         query = query.filter(Image.orientation.ilike(mode))
     if payment:
-        print(payment)
         query = query.filter(Image.payment_required == payment)
             
     images = query.paginate(page=page, per_page=per_page)
@@ -237,7 +236,7 @@ def logout():
     logout_user()
     if 'role' in session:
         session.pop('role')
-    return redirect(url_for('contrib_bp.contrib-login'))
+    return redirect(url_for('users_bp.landing'))
 
 
 @users.route("/user/logout", endpoint="user-logout")
@@ -245,7 +244,7 @@ def logout():
     logout_user()
     if 'role' in session:
         session.pop('role')
-    return redirect(url_for('users_bp.user-login'))
+    return redirect(url_for('users_bp.landing'))
 
 @users.route("/admin/logout", endpoint="admin-logout")
 def logout():
