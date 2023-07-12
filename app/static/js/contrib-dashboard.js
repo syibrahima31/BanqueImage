@@ -25,7 +25,9 @@ function navigate(event) {
 }
 
 const app = {
-  content: document.querySelector('#content')
+  content: document.querySelector('#content'),
+  pagination: document.querySelector('#pagination-bloc'),
+  grid: document.querySelector('.image-grid')
 }
 
 // const home = document.querySelector('.nav-link');
@@ -128,6 +130,32 @@ const modalEditForm = document.querySelector('.file-edit');
 </div>
 </div> */}
 
+function getPaginationBloc(data) {
+  const previousEnabled = data.has_prev ? "enabled" : "disabled";
+  const nextEnabled = data.has_next ? "enabled" : "disabled";
+
+  const lis = [];
+  
+  for(let i=0; i < data.total_pages; i++){ 
+    lis.push(`<li class="page-item ${i + 1 === data.current_page ? "active" : "inactive"}"><a class="page-link" href="#">${i + 1}</a></li>`);
+  }
+  
+  return `
+        <nav aria-label="...">
+        <ul class="pagination pagination-circle">
+          <li class="page-item">
+            <a class="page-link ${previousEnabled}">Précédent</a>
+          </li>
+          ${lis.join('')}
+          <li class="page-item">
+            <a class="page-link ${nextEnabled}" href="#">Suivant</a>
+          </li>
+        </ul>
+      </nav>
+    `;
+}
+
+
 function getCardList(data) {
   return data.images.map((item) => `
       <div class="col-md-4">
@@ -142,10 +170,10 @@ function getCardList(data) {
           <div class="card-body container">
             <div class="row">
               <div class="col">
-                <a href="#!" class="btn btn-primary">Preview</a>
+                <a href="#!" class="btn btn-primary"><i class="fas fa-eye"></i></a>
               </div>
               <div class="col">
-                <a href="#!" class="btn btn-primary">Details</a>
+                <a href="#!" class="btn btn-primary"><i class="fas fa-circle-info"></i></a>
               </div>
             </div>
           </div>
@@ -249,78 +277,83 @@ if(imageGrid){
   })
   .then(response => response.json())
   .then(data => {
-    let updatedData;
-    const ul = document.createElement('ul');
-    const previous = document.createElement('li');
-    const anchor = document.createElement('a');
-    anchor.setAttribute('href', '#!');
-    const icon = document.createElement('i');
-    icon.setAttribute('class', 'material-icons');
-    icon.textContent = 'chevron_left';
-    anchor.appendChild(icon);
-    previous.appendChild(anchor);
-    if(!data.has_prev){
-      previous.setAttribute('class', 'disabled');
-    }
-    ul.setAttribute('class', 'pagination');
-    ul.appendChild(previous);
-    for(let i=0; i < data.total_pages; i++) {
-      const li = document.createElement('li');
-      li.setAttribute('class', 'waves-effect');
-      const a = document.createElement('a');
-      a.setAttribute('href', '#!')
-      a.textContent = i + 1;
-      a.addEventListener('click', (e) => {
-        const currentNode = e.target.parentNode;
-        currentNode.setAttribute('class', 'active');
-        const siblings = Array.from(e.target.parentNode.parentNode.childNodes);
-        siblings.forEach(node => {
-          if(node !== currentNode){
-            node.setAttribute('class', 'inactive');
-            node.setAttribute('style', 'background-color:none;');
-          }
-        })
-        e.target.parentNode.setAttribute('style', 'background-color: #26a69a;');
-        const pageNumber = parseInt(e.target.innerText);
-        updatedData = getPaginatedData(pageNumber, 2, '/contributor/images');
-        updatedData.then(result => {
-          imageGrid.innerHTML = getCardList(result);
-          const cards = document.querySelectorAll('.card');
-          // addCardButtons(cards);
-        });
-      });
-      li.appendChild(a);
-      ul.appendChild(li);
-      const firstAnchor = Array.from(ul.querySelectorAll('a'))[1];
-      if(parseInt(firstAnchor.textContent) === data.current_page){
-        firstAnchor.parentNode.setAttribute('class', 'active');
-        firstAnchor.parentNode.setAttribute('style', 'background-color: #26a69a;');
-      }
-    }
-    const next = document.createElement('li');
-    const next_anchor = document.createElement('a');
-    next_anchor.setAttribute('href', '#!');
-    const next_icon = document.createElement('i');
-    next_icon.setAttribute('class', 'material-icons');
-    next_icon.textContent = 'chevron_right';
-    next_anchor.appendChild(next_icon);
-    next.appendChild(next_anchor);
-    if(!data.has_next){
-      next.setAttribute('class', 'disabled');
-    }
-    ul.appendChild(next);
+    // let updatedData;
+    // const ul = document.createElement('ul');
+    // const previous = document.createElement('li');
+    // const anchor = document.createElement('a');
+    // anchor.setAttribute('href', '#!');
+    // const icon = document.createElement('i');
+    // icon.setAttribute('class', 'material-icons');
+    // icon.textContent = 'chevron_left';
+    // anchor.appendChild(icon);
+    // previous.appendChild(anchor);
+    // if(!data.has_prev){
+    //   previous.setAttribute('class', 'disabled');
+    // }
+    // ul.setAttribute('class', 'pagination');
+    // ul.appendChild(previous);
+    // for(let i=0; i < data.total_pages; i++) {
+    //   const li = document.createElement('li');
+    //   li.setAttribute('class', 'waves-effect');
+    //   const a = document.createElement('a');
+    //   a.setAttribute('href', '#!')
+    //   a.textContent = i + 1;
+    //   a.addEventListener('click', (e) => {
+    //     const currentNode = e.target.parentNode;
+    //     currentNode.setAttribute('class', 'active');
+    //     const siblings = Array.from(e.target.parentNode.parentNode.childNodes);
+    //     siblings.forEach(node => {
+    //       if(node !== currentNode){
+    //         node.setAttribute('class', 'inactive');
+    //         node.setAttribute('style', 'background-color:none;');
+    //       }
+    //     })
+    //     e.target.parentNode.setAttribute('style', 'background-color: #26a69a;');
+    //     const pageNumber = parseInt(e.target.innerText);
+    //     updatedData = getPaginatedData(pageNumber, 2, '/contributor/images');
+    //     updatedData.then(result => {
+    //       imageGrid.innerHTML = getCardList(result);
+    //       const cards = document.querySelectorAll('.card');
+    //       // addCardButtons(cards);
+    //     });
+    //   });
+    //   li.appendChild(a);
+    //   ul.appendChild(li);
+    //   const firstAnchor = Array.from(ul.querySelectorAll('a'))[1];
+    //   if(parseInt(firstAnchor.textContent) === data.current_page){
+    //     firstAnchor.parentNode.setAttribute('class', 'active');
+    //     firstAnchor.parentNode.setAttribute('style', 'background-color: #26a69a;');
+    //   }
+    // }
+    // const next = document.createElement('li');
+    // const next_anchor = document.createElement('a');
+    // next_anchor.setAttribute('href', '#!');
+    // const next_icon = document.createElement('i');
+    // next_icon.setAttribute('class', 'material-icons');
+    // next_icon.textContent = 'chevron_right';
+    // next_anchor.appendChild(next_icon);
+    // next.appendChild(next_anchor);
+    // if(!data.has_next){
+    //   next.setAttribute('class', 'disabled');
+    // }
+    // ul.appendChild(next);
     // console.log('Nombre total de pages', data.total_pages)
     // console.log('Page actuelle', data.current_page)
     // console.log('contient_avant', data.has_prev)
     // console.log('contient_après', data.has_next)
-    const cardList = getCardList(data);
-    imageGrid.innerHTML = cardList;
-    const cards = document.querySelectorAll('.card');
+    // const cardList = getCardList(data);
+    // imageGrid.innerHTML = cardList;
+    // const cards = document.querySelectorAll('.card');
     // addCardButtons(cards);
     
     // imageGrid.innerHTML = cardList.join('');
-    const paginationBloc = document.querySelector('#pagination-bloc');
-    paginationBloc.appendChild(ul);
+    // const paginationBloc = document.querySelector('#pagination-bloc');
+    // paginationBloc.appendChild(ul);
+    app.grid = document.querySelector('.image-grid');
+    app.grid.innerHTML = getCardList(data);
+    app.pagination = document.querySelector('#pagination-bloc');
+    app.pagination.innerHTML = getPaginationBloc(data);
+    console.log(document.querySelectorAll('a.page-link'));
     
   })
   .catch(error => {
